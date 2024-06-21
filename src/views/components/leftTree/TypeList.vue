@@ -3,7 +3,7 @@
     <BasicTree
       :title="title"
       toolbar
-      search
+      :search="false"
       :clickRowToExpand="false"
       :treeData="treeData"
       :fieldNames ="{ key: 'id', title: 'cname' }"

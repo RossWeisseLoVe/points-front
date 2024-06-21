@@ -1,7 +1,5 @@
 import { BasicColumn } from '@/components/Table';
 import { FormSchema } from '@/components/Table';
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
     title: '名称',
@@ -10,7 +8,7 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
-    title: '积分奖励',
+    title: '积分消耗',
     dataIndex: 'point',
     width: 150,
     align: 'left',
@@ -19,7 +17,7 @@ export const columns: BasicColumn[] = [
     title: '类型',
     dataIndex: 'type',
     slots: { customRender: 'type' },
-    width: 120,
+    width: 80,
     align: 'left',
   },
   {
@@ -40,14 +38,14 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     slots: { customRender: 'status' },
-    width: 60,
+    width: 70,
     align: 'left',
   },
   {
-    title: '定时售卖时间',
+    title: '售卖时间',
     dataIndex: 'time',
     slots: { customRender: 'time' },
-    width: 200,
+    width: 290,
     align: 'left',
   },
   {

@@ -15,6 +15,12 @@
           <TableAction
             :actions="[
               {
+                tooltip: '积分获取',
+                icon: 'ant-design:account-book-outlined',
+                onClick: handleIncrease.bind(null, record),
+                auth: 'Client:'+PerEnum.UPDATE,
+              },
+              {
                 tooltip: '修改',
                 icon: 'clarity:note-edit-line',
                 onClick: handleEdit.bind(null, record),
@@ -37,6 +43,7 @@
       </template>
     </BasicTable>
     <ClientDrawer ref="drawer" @handleSuccess="reloadList"/>
+    <GetInActivityModal @register="registerModal" @success="reload" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -50,11 +57,14 @@
   import ClientDrawer from './ClientDrawer.vue';
   import { columns, searchFormSchema } from './client.data';
   import { useMessage } from '@/hooks/web/useMessage';
+  import { useModal } from '@/components/Modal';
   import { PerEnum } from '@/enums/perEnum';
+  import GetInActivityModal from '@/views/point/components/GetInActivityModal/index.vue'
   const { createMessage } = useMessage();
   const currentTreeNode = ref<String>("");
   const typeList = ref([])
   const drawer = ref()
+  const [registerModal, { openModal, setModalProps }] = useModal();
   const [registerTable, { reload }] = useTable({
     title: '列表',
     api: getClientPage,
@@ -72,7 +82,7 @@
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
-      width: 100,
+      width: 160,
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
@@ -105,6 +115,16 @@
       record: record,
       isUpdate: true
     })
+  }
+
+  function handleIncrease(record){
+    setModalProps({
+      title: record.name + '：获取积分',
+      width: '1000px'
+    });
+    openModal(true, {
+      record
+    });
   }
 
   function handleDelete(record: Recordable) {

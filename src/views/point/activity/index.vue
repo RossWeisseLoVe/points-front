@@ -73,7 +73,7 @@
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
-      width: 100,
+      width: 160,
       title: '操作',
       dataIndex: 'action',
       fixed: false,
