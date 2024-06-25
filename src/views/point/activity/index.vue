@@ -35,6 +35,9 @@
       <template #type="{record}">
         <Tag :color="getColor(record)">{{ getType(record) }}</Tag>
       </template>
+      <template #maxPerHead="{record}">
+        <Tag color="green">最多{{ record.max }}次</Tag>
+      </template>
     </BasicTable>
     <ActivityModal @register="registerModal" @success="handleSuccess" />
   </PageWrapper>
@@ -76,7 +79,7 @@
       width: 160,
       title: '操作',
       dataIndex: 'action',
-      fixed: false,
+      fixed: 'right',
     },
   });
 

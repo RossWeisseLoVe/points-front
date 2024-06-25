@@ -43,7 +43,7 @@
       </template>
     </BasicTable>
     <ClientDrawer ref="drawer" @handleSuccess="reloadList"/>
-    <GetInActivityModal @register="registerModal" @success="reload" />
+    <GetInActivityModal @register="registerModal" @success="reloadList" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -120,10 +120,12 @@
   function handleIncrease(record){
     setModalProps({
       title: record.name + '：获取积分',
-      width: '1000px'
+      width: '1200px'
     });
     openModal(true, {
-      record
+      record,
+      tagColor:getColor(record),
+      type: getType(record)
     });
   }
 

@@ -23,6 +23,13 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
+    title: '每人可参与次数',
+    dataIndex: 'max',
+    slots: { customRender: 'maxPerHead' },
+    width: 120,
+    align: 'left',
+  },
+  {
     title: '备注',
     dataIndex: 'remark',
     width: 200,
@@ -124,6 +131,21 @@ export const formSchema: FormSchema[] = [
     show: true,
     dynamicDisabled: true,
     colProps: { span: 22 },
+  },
+  {
+    field: 'max',
+    label: '最多参与次数',
+    required: true,
+    component: 'Input',
+    show: true,
+    colProps: { span: 22 },
+    rules:[
+      {
+        pattern: new RegExp('^[1-9]\\d{0,6}$'),
+        type: 'string',
+        message: '请输入正整数，不超过9999999 ！',
+      },
+    ]
   },
   {
     field: 'remark',

@@ -35,8 +35,22 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
+    title: '每人可参与次数',
+    dataIndex: 'max',
+    slots: { customRender: 'maxPerHead' },
+    width: 120,
+    align: 'left',
+  },
+  {
     title: '备注',
     dataIndex: 'remark',
     align: 'left',
   }
 ];
+
+export const rules = {
+  instructions: [
+    { required: true, message: '请填写积分获取说明', trigger: 'change' },
+    { min: 5, max: 400, message: '字数介于5 - 400之间', trigger: 'blur' },
+  ],
+};
