@@ -3,7 +3,7 @@
     <div :style="{display:'flex',justifyContent:'center'}" class="mb-5">
       <Steps :current="current" :items="items" :style="{width:'70%'}"></Steps>
     </div>
-    <div class="table-container" v-if="current===0">
+    <div class="table-container" v-show="current===0">
       <TypeList class="w-1/4 xl:w-1/6" @select="handleSelect" title="活动分类" mainId="01b78d610662800b6af6f8b8d04d73ee" />
       <BasicTable @register="registerTable" class="w-3/4 xl:w-5/6" @selection-change="selectionChange">
         <template #toolbar>
@@ -67,7 +67,7 @@
 </template>
 <script lang="ts" setup>
 import {  notification,Steps, Button,Tag,message,Form,FormItem,Input,Descriptions,DescriptionsItem,Badge } from 'ant-design-vue';
-import { ref, computed, unref,reactive,onMounted, h } from 'vue';
+import { ref, computed, unref,reactive,onMounted, h,nextTick } from 'vue';
 import { BasicModal, useModalInner } from '@/components/Modal';
 import TypeList from '@/views/components/leftTree/TypeList.vue';
 import { BasicTable, useTable, TableAction } from '@/components/Table';
@@ -80,7 +80,7 @@ import { save,getTimesRemain } from '@/api/point/orders'
 const TextArea = Input.TextArea
 const labelCol = { span: 7 };
 const wrapperCol = { span: 13 };
-const [registerTable, { reload }] = useTable({
+const [registerTable, { reload,setProps }] = useTable({
     title: '列表',
     api: getActivityPage,
     immediate: true,
@@ -132,7 +132,7 @@ const tagInfo = reactive({
   color: '',
   type: ''
 })
-const emit = defineEmits(['success','register'])
+const emit = defineEmits(['success','register','pushTo'])
 const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
   init()
   record.value = data.record
@@ -220,7 +220,10 @@ function openNotification(){
         {
           type: 'primary',
           size: 'small',
-          onClick: () => notification.close(key),
+          onClick: () => {
+            notification.close(key)
+            emit('pushTo')
+          },
         },
         { default: () => '查看积分记录' },
       ),

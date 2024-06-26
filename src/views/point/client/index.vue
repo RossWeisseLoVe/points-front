@@ -43,7 +43,7 @@
       </template>
     </BasicTable>
     <ClientDrawer ref="drawer" @handleSuccess="reloadList"/>
-    <GetInActivityModal @register="registerModal" @success="reloadList" />
+    <GetInActivityModal @register="registerModal" @success="reloadList" @pushTo="pushToHistory"/>
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -60,6 +60,9 @@
   import { useModal } from '@/components/Modal';
   import { PerEnum } from '@/enums/perEnum';
   import GetInActivityModal from '@/views/point/components/GetInActivityModal/index.vue'
+  import { useGo } from '@/hooks/web/usePage';
+
+  const go = useGo()
   const { createMessage } = useMessage();
   const currentTreeNode = ref<String>("");
   const typeList = ref([])
@@ -118,6 +121,7 @@
   }
 
   function handleIncrease(record){
+    go('/point/history?cid='+record.id)
     setModalProps({
       title: record.name + '：获取积分',
       width: '1200px'
@@ -163,5 +167,9 @@
         return item.color
       }      
     }
+  }
+
+  function pushToHistory(){
+    go('/point/history')
   }
 </script>

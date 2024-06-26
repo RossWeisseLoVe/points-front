@@ -63,12 +63,10 @@
         <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
       </template>
       <template #time="{record}">
-        <Tag color="default" v-if='record.startTime===null' >暂未设置</Tag>
-        <div v-else>
-          <Tag color="cyan" >{{ record.startTime }}</Tag> ~
-          <Tag color="cyan">{{ record.endTime }}</Tag>
-        </div>
-
+        <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
+      </template>
+      <template #inventory="{record}">
+        <Tag color="green">最多{{ record.inventory }}次</Tag>
       </template>
     </BasicTable>
     <RewardModal @register="registerModal" @success="handleSuccess" />
