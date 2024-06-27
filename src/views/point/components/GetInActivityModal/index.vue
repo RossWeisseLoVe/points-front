@@ -222,7 +222,7 @@ function openNotification(){
           size: 'small',
           onClick: () => {
             notification.close(key)
-            emit('pushTo')
+            emit('pushTo',record.value.id)
           },
         },
         { default: () => '查看积分记录' },

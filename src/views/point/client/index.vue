@@ -12,12 +12,24 @@
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <TableAction
+          <TableAction  
             :actions="[
               {
                 tooltip: '积分获取',
                 icon: 'ant-design:account-book-outlined',
                 onClick: handleIncrease.bind(null, record),
+                auth: 'Client:'+PerEnum.UPDATE,
+              },
+              {
+                tooltip: '兑换奖品',
+                icon: 'ant-design:transaction-outlined',
+                onClick: handleIncrease.bind(null, record),
+                auth: 'Client:'+PerEnum.UPDATE,
+              },
+              {
+                tooltip: '积分历史',
+                icon: 'ant-design:field-time-outlined',
+                onClick: handlePushToHistory.bind(null, record),
                 auth: 'Client:'+PerEnum.UPDATE,
               },
               {
@@ -85,7 +97,7 @@
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
-      width: 160,
+      width: 180,
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
@@ -121,7 +133,6 @@
   }
 
   function handleIncrease(record){
-    go('/point/history?cid='+record.id)
     setModalProps({
       title: record.name + '：获取积分',
       width: '1200px'
@@ -169,7 +180,11 @@
     }
   }
 
-  function pushToHistory(){
-    go('/point/history')
+  function pushToHistory(id){
+    go('/point/history?cid='+id)
+  }
+
+  function handlePushToHistory(record){
+    go('/point/history?cid='+record.id)
   }
 </script>
