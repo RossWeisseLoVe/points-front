@@ -63,7 +63,10 @@
         <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
       </template>
       <template #time="{record}">
-        <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
+        <div v-if="record.startTime">
+          <Tag color="green">{{ record.startTime }} 至 {{ record.endTime }}</Tag>
+        </div>
+          <Tag v-else color="red">暂未设置</Tag>
       </template>
       <template #inventory="{record}">
         <Tag color="green">最多{{ record.inventory }}次</Tag>

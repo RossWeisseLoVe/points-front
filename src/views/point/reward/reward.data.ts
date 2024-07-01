@@ -42,7 +42,7 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
-    title: '售卖时间',
+    title: '可兑换时间',
     dataIndex: 'time',
     slots: { customRender: 'time' },
     width: 290,
@@ -168,7 +168,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'time',
-    label: '售卖时间',
+    label: '可兑换时间',
     required: false,
     slot: 'rangePicker',
     show: true,

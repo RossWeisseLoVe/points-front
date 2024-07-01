@@ -19,6 +19,12 @@
       <template #oType="{record}">
         <Tag :color="getType(record)?.color">{{ getType(record)?.name }}</Tag>
       </template>
+      <template #num="{record}">
+        <Tag :bordered="false" color="processing">{{ record.num }}</Tag>
+      </template>
+      <template #point="{record}">
+        <Tag :color="getType(record)?.color" :bordered="false">{{ ([1,4].includes(record.orderType)? "+": "-") + record.point}}</Tag>
+      </template>
       <template #cancelFlag="{record}">
         <Tag :bordered="false" color="processing" v-if="record.cancelFlag === 0">正常</Tag>
         <Tag :bordered="false" color="error" v-else>取消</Tag>
@@ -68,7 +74,7 @@ const [registerTable, { reload }] = useTable({
     },
   });
   const typeList = ref([])
-
+  const typeGoodsList = ref([])
   watch(()=>sortType.value,(val)=>{
     reload({
       searchInfo:{
@@ -85,6 +91,12 @@ const [registerTable, { reload }] = useTable({
       mainId: "01b78d610662800b6af6f8b8d04d73ee"
     })
     typeList.value = res.rows
+    const resGoods = await dictionaryItemPageList({
+     pageNum: 1,
+     pageSize: 100000,
+      mainId: "6df56d101d9f08d00d0c269ecd14959f"
+    })
+    typeGoodsList.value = resGoods.rows
   })
 
   function getOrderName(record){
@@ -101,24 +113,41 @@ const [registerTable, { reload }] = useTable({
   }
 
   function getOrderType(record){
-    for (const item of typeList.value) {
-      if(item.id === record.activityType){
-        return item.cname
-      }      
+    if(record.orderType === 1){
+      for (const item of typeList.value) {
+        if(item.id === record.activityType){
+          return item.cname
+        }      
+      }
+    }else if(record.orderType === 2){
+      for (const item of typeGoodsList.value) {
+        if(item.id === record.goodsType){
+          return item.cname
+        }      
+      }
     }
+
   }
 
   function getOrderColor(record){
-    for (const item of typeList.value) {
-      if(item.id === record.activityType){
-        return item.color
-      }      
+    if(record.orderType === 1){
+      for (const item of typeList.value) {
+        if(item.id === record.activityType){
+          return item.color
+        }      
+      }
+    }else if(record.orderType === 2){
+      for (const item of typeGoodsList.value) {
+        if(item.id === record.goodsType){
+          return item.color
+        }      
+      }
     }
   }
 
   function getType(record){
     for (const item of goodsTypeList) {
-      if(item.type =record.orderType){
+      if(item.type ===record.orderType){
         return item
       }
     }

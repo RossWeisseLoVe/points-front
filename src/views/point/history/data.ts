@@ -24,6 +24,13 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
+    title: '数量',
+    dataIndex: 'num',
+    slots: { customRender: 'num' },
+    width: 60,
+    align: 'left',
+  },
+  {
     title: '订单状态',
     dataIndex: 'cancelFlag',
     slots: { customRender: 'cancelFlag' },
@@ -37,8 +44,9 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
-    title: '积分',
+    title: '积分变化',
     dataIndex: 'point',
+    slots: { customRender: 'point' },
     width: 80,
     align: 'left',
   },
@@ -84,7 +92,7 @@ export const goodsTypeList =[
   {
     type: 2,
     color: 'green',
-    name: '积分使用'
+    name: '积分兑换'
   },
   {
     type: 3,
@@ -94,7 +102,7 @@ export const goodsTypeList =[
   {
     type: 4,
     color: 'gold',
-    name: '积分过期清空'
+    name: '积分赠予'
   }
 ]
 

@@ -23,7 +23,7 @@
               {
                 tooltip: '兑换奖品',
                 icon: 'ant-design:transaction-outlined',
-                onClick: handleIncrease.bind(null, record),
+                onClick: handleExchange.bind(null, record),
                 auth: 'Client:'+PerEnum.UPDATE,
               },
               {
@@ -56,6 +56,7 @@
     </BasicTable>
     <ClientDrawer ref="drawer" @handleSuccess="reloadList"/>
     <GetInActivityModal @register="registerModal" @success="reloadList" @pushTo="pushToHistory"/>
+    <ExchageModal @register="registerExModal" @success="reloadList" @pushTo="pushToHistory"/>
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -72,14 +73,15 @@
   import { useModal } from '@/components/Modal';
   import { PerEnum } from '@/enums/perEnum';
   import GetInActivityModal from '@/views/point/components/GetInActivityModal/index.vue'
+  import ExchageModal from '@/views/point/components/ExchangeModal/index.vue'
   import { useGo } from '@/hooks/web/usePage';
 
   const go = useGo()
-  const { createMessage } = useMessage();
   const currentTreeNode = ref<String>("");
   const typeList = ref([])
   const drawer = ref()
   const [registerModal, { openModal, setModalProps }] = useModal();
+  const [registerExModal, { openModal:openExModal, setModalProps: setExModalProps }] = useModal();
   const [registerTable, { reload }] = useTable({
     title: '列表',
     api: getClientPage,
@@ -138,6 +140,18 @@
       width: '1200px'
     });
     openModal(true, {
+      record,
+      tagColor:getColor(record),
+      type: getType(record)
+    });
+  }
+
+  function handleExchange(record){
+    setExModalProps({
+      title: record.name + '：兑换奖品',
+      width: '1200px'
+    });
+    openExModal(true, {
       record,
       tagColor:getColor(record),
       type: getType(record)

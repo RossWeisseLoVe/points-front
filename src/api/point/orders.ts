@@ -3,15 +3,25 @@ import {defHttp} from '/@/utils/http/axios';
 enum Api {
   Save = '/flow/customer/orders/save',
   GetTimesRemain = '/flow/customer/orders/getTimesRemain',
-  Page = '/flow/customer/orders/page'
+  Page = '/flow/customer/orders/page',
+  Exchange = '/flow/customer/orders/exchange',
+  GetRewardsTimesRemain = '/flow/customer/orders/getRewardsTimesRemain',
 }
 /* 新增订单 */
 export const save = (params) =>
   defHttp.post({url: Api.Save, params});
 
+export const exchange = (params) =>
+  defHttp.post({url: Api.Exchange, params});
+
 export const getTimesRemain = (params)=>
   defHttp.get({
     url: Api.GetTimesRemain + '/' + params.cid + '/' + params.addType
+  })
+
+export const getRewardsTimesRemain = (params)=>
+  defHttp.get({
+    url: Api.GetRewardsTimesRemain + '/' + params.cid + '/' + params.decreaseType
   })
 
 export const getHistoryPage = (params) => {
