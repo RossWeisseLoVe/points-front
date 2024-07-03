@@ -30,7 +30,7 @@
                 tooltip: '积分历史',
                 icon: 'ant-design:read-outlined',
                 onClick: handlePushToHistory.bind(null, record),
-                auth: 'Client:'+PerEnum.UPDATE,
+                auth: 'Client:'+PerEnum.QUERY,
               },
               {
                 tooltip: '修改',

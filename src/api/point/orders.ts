@@ -6,6 +6,7 @@ enum Api {
   Page = '/flow/customer/orders/page',
   Exchange = '/flow/customer/orders/exchange',
   GetRewardsTimesRemain = '/flow/customer/orders/getRewardsTimesRemain',
+  GetHomeData = '/flow/customer/orders/getHomeData',
 }
 /* 新增订单 */
 export const save = (params) =>
@@ -38,3 +39,8 @@ export const getHistoryPage = (params) => {
   const result = defHttp.post({url: Api.Page, params: param});
   return result;
 };
+
+export const getHomeData = ()=>
+  defHttp.get({
+    url: Api.GetHomeData
+  })

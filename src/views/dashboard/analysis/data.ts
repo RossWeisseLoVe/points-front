@@ -5,24 +5,27 @@ export interface GrowCardItem {
   total: number;
   color: string;
   action: string;
+  totalLabel?: string;
 }
 
 export const growCardList: GrowCardItem[] = [
   {
-    title: '访问数',
+    title: '本月积分发放量',
     icon: 'visit-count|svg',
-    value: 2000,
-    total: 120000,
+    value: 0,
+    total: 0,
     color: 'green',
     action: '月',
+    totalLabel: "历史积分发放量"
   },
   {
-    title: '成交额',
+    title: '本月积分兑换量',
     icon: 'total-sales|svg',
-    value: 20000,
-    total: 500000,
+    value: 0,
+    total: 0,
     color: 'blue',
     action: '月',
+    totalLabel: "历史积分兑换量"
   },
   {
     title: '下载数',
