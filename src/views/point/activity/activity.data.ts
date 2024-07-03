@@ -12,14 +12,28 @@ export const columns: BasicColumn[] = [
   {
     title: '积分奖励',
     dataIndex: 'point',
-    width: 150,
+    width: 100,
     align: 'left',
   },
   {
     title: '类型',
     dataIndex: 'type',
     slots: { customRender: 'type' },
-    width: 200,
+    width: 100,
+    align: 'left',
+  },
+  {
+    title: '活动名额',
+    dataIndex: 'inventory',
+    slots: { customRender: 'inventory' },
+    width: 100,
+    align: 'left',
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    slots: { customRender: 'status' },
+    width: 100,
     align: 'left',
   },
   {
@@ -27,6 +41,13 @@ export const columns: BasicColumn[] = [
     dataIndex: 'max',
     slots: { customRender: 'maxPerHead' },
     width: 120,
+    align: 'left',
+  },
+  {
+    title: '活动时间',
+    dataIndex: 'time',
+    slots: { customRender: 'time' },
+    width: 290,
     align: 'left',
   },
   {
@@ -115,6 +136,21 @@ export const formSchema: FormSchema[] = [
     ]
   },
   {
+    field: 'inventory',
+    label: '活动名额',
+    required: true,
+    component: 'Input',
+    show: true,
+    colProps: { span: 22 },
+    rules:[
+      {
+        pattern: new RegExp('^[1-9]\\d{0,6}$'),
+        type: 'string',
+        message: '请输入正整数，不超过9999999 ！',
+      },
+    ]
+  },
+  {
     field: 'type',
     label: '类型',
     required: false,
@@ -128,6 +164,15 @@ export const formSchema: FormSchema[] = [
     label: '类型',
     required: false,
     component: 'Input',
+    show: true,
+    dynamicDisabled: true,
+    colProps: { span: 22 },
+  },
+  {
+    field: 'time',
+    label: '可兑换时间',
+    required: true,
+    slot: 'rangePicker',
     show: true,
     dynamicDisabled: true,
     colProps: { span: 22 },

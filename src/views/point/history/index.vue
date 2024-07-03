@@ -33,7 +33,7 @@
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-import { Tag } from 'ant-design-vue'
+import { Tag,RadioGroup,RadioButton  } from 'ant-design-vue'
 import { PageWrapper } from '@/components/Page';
 import { BasicTable, useTable, TableAction } from '@/components/Table';
 import { columns,searchFormSchema,goodsTypeList } from './data'
@@ -42,14 +42,16 @@ import { useRoute } from 'vue-router'
 import { PerEnum } from '@/enums/perEnum';
 import { onMounted,ref,watch } from 'vue'
 import { dictionaryItemPageList } from '@/api/base/dictionary';
-import { RadioGroup,RadioButton } from 'ant-design-vue'
+import { useTabs } from '@/hooks/web/useTabs';
 
+const {setTitle } = useTabs();
+const searchInfo = ref({})
 const sortType = ref(1)
 const route = useRoute()
 const [registerTable, { reload }] = useTable({
     title: '列表',
     api: getHistoryPage,
-    immediate: true,
+    immediate: false,
     columns,
     formConfig: {
       labelWidth: 120,
@@ -60,10 +62,7 @@ const [registerTable, { reload }] = useTable({
     },
     canColDrag: true,
     useSearchForm: true,
-    searchInfo:{
-        cid: route.query.cid,
-        sortType: sortType.value
-    },
+    searchInfo: searchInfo.value,
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
@@ -78,13 +77,14 @@ const [registerTable, { reload }] = useTable({
   watch(()=>sortType.value,(val)=>{
     reload({
       searchInfo:{
-        cid: route.query.cid,
+        ...searchInfo.value,
         sortType: val
       }
     })
   })
 
   onMounted(async ()=>{
+    setTitle(route.query.title+'-积分历史')
     const res = await dictionaryItemPageList({
      pageNum: 1,
      pageSize: 100000,
@@ -97,6 +97,19 @@ const [registerTable, { reload }] = useTable({
       mainId: "6df56d101d9f08d00d0c269ecd14959f"
     })
     typeGoodsList.value = resGoods.rows
+    if(route.query.cid){
+      searchInfo.value.cid = route.query.cid
+    }else if(route.query.rid){
+      searchInfo.value.decreaseType = route.query.rid
+    }else if(route.query.aid){
+      searchInfo.value.addType = route.query.aid
+    }
+    reload({
+      searchInfo: {
+        ...searchInfo.value,
+        sortType: sortType.value,
+      }
+    })
   })
 
   function getOrderName(record){

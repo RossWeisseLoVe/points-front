@@ -10,7 +10,14 @@ export const columns: BasicColumn[] = [
   {
     title: '积分消耗',
     dataIndex: 'point',
-    width: 150,
+    width: 100,
+    align: 'left',
+  },
+  {
+    title: '库存',
+    dataIndex: 'inventory',
+    slots: { customRender: 'inventory' },
+    width: 90,
     align: 'left',
   },
   {
@@ -169,7 +176,7 @@ export const formSchema: FormSchema[] = [
   {
     field: 'time',
     label: '可兑换时间',
-    required: false,
+    required: true,
     slot: 'rangePicker',
     show: true,
     dynamicDisabled: true,

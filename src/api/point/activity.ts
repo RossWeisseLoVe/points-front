@@ -5,6 +5,7 @@ enum Api {
   AddActivity = '/flow/customer/activity/addActivity',
   UpdateActivity = '/flow/customer/activity/updateActivity',
   DeleteActivityByIds = '/flow/customer/activity/deleteActivityByIds',
+  SetTimedStatus = '/flow/customer/activity/setTimedStatus',
 }
 
 export const getActivityPage = (params) => {
@@ -31,3 +32,6 @@ export const updateActivity = (params) =>
 export const deleteActivityByIds = (params) =>
   defHttp.post({url: Api.DeleteActivityByIds, params});
 
+  // 设置定时发布
+  export const setTimedStatus = (params) =>
+  defHttp.get({url: Api.SetTimedStatus+'/'+params.id+'/'+params.status});

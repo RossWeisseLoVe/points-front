@@ -18,6 +18,21 @@
                 auth: 'Activity:'+PerEnum.UPDATE,
               },
               {
+                tooltip: '定时发布',
+                icon: 'ant-design:field-time-outlined',
+                onClick: handleTimed.bind(null, record,1),
+                auth: 'Activity:'+PerEnum.UPDATE,
+                ifShow: record.timedStatus === 0
+              },
+              {
+                tooltip: '取消定时发布',
+                icon: 'ant-design:field-time-outlined',
+                onClick: handleTimed.bind(null, record,0),
+                color: 'error',
+                auth: 'Activity:'+PerEnum.UPDATE,
+                ifShow: record.timedStatus === 1
+              },
+              {
                 tooltip: '上架',
                 icon: 'ant-design:arrow-up-outlined',
                 onClick: handleChangeStatus.bind(null, record,1),
@@ -31,6 +46,12 @@
                 onClick: handleChangeStatus.bind(null, record,2),
                 auth: 'Activity:'+PerEnum.PUBLISH,
                 ifShow: record.status === 1 
+              },
+              {
+                tooltip: '兑换历史',
+                icon: 'ant-design:read-outlined',
+                onClick: pushToHistory.bind(null, record),
+                auth: 'Activity:'+PerEnum.QUERY,
               },
               {
                 tooltip: '删除',
@@ -62,24 +83,24 @@
       <template #maxPerHead="{record}">
         <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
       </template>
-      <template #time="{record}">
-        <div v-if="record.startTime">
-          <Tag color="green">{{ record.startTime }} 至 {{ record.endTime }}</Tag>
-        </div>
-          <Tag v-else color="red">暂未设置</Tag>
-      </template>
       <template #inventory="{record}">
-        <Tag color="green">最多{{ record.inventory }}次</Tag>
+        <Tag v-if="record.inventory===0" color="red" >{{ record.inventory }}</Tag>
+        <Tag color="green" v-else>{{ record.inventory }}</Tag>
+      </template>
+      <template #time="{record}">
+          <Tag color="green" v-if="record.timedStatus===1">{{ record.startTime }} 至 {{ record.endTime }}</Tag>
+          <Tag color="default" v-else>{{ record.startTime }} 至 {{ record.endTime }}</Tag>
       </template>
     </BasicTable>
     <RewardModal @register="registerModal" @success="handleSuccess" />
+    <contextHolder />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-  import { Tag } from 'ant-design-vue'
+  import { Tag,notification } from 'ant-design-vue'
   import {  onMounted, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getRewardPage,deleteRewardByIds,updateReward } from "@/api/point/reward"
+  import { getRewardPage,deleteRewardByIds,updateReward,setTimedStatus } from "@/api/point/reward"
   import { PageWrapper } from '@/components/Page';
   import TypeList from '@/views/components/leftTree/TypeList.vue';
   import { useModal } from '@/components/Modal';
@@ -88,6 +109,9 @@
   import { columns, searchFormSchema } from './reward.data';
   import { useMessage } from '@/hooks/web/useMessage';
   import { PerEnum } from '@/enums/perEnum';
+  import { useGo } from '@/hooks/web/usePage';
+
+  const go = useGo()
   const { createMessage } = useMessage();
   const [registerModal, { openModal, setModalProps }] = useModal();
   const currentTreeNode = ref<String>("");
@@ -109,7 +133,7 @@
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
-      width: 150,
+      width: 180,
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
@@ -159,6 +183,10 @@
     }, 200);
   }
 
+  function pushToHistory(record){
+    go('/point/history?rid='+record.id+"&title="+record.name)
+  }
+
   function handleSelect(key:String) {
     currentTreeNode.value = key;
     let searchInfo = {
@@ -190,7 +218,26 @@
     })
     reload()
   }
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (placement,time,name) => {
+        api.info({
+          message: `上架提醒： ${name}`,
+          description:
+            '您已设定开始售卖时间为：'+time+'届时将自动上架该物品',
+          placement,
+        });
+      };
+
+  async function handleTimed(record,status){
+    await setTimedStatus({
+      id:record.id,
+      status
+    })
+    reload()
+    if(status===1){
+      openNotification('topRight',record.startTime,record.name)
+    }
+  }
 
 
 </script>
-./activity.data

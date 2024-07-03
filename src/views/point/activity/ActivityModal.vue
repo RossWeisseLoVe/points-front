@@ -1,6 +1,10 @@
 <template>
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm" >
+        <template #rangePicker="data">
+          <RangePicker v-model:value="data.model.time" show-time/>
+        </template>
+    </BasicForm>
   </BasicModal>
 </template>
 <script lang="ts">
@@ -9,10 +13,12 @@
   import { BasicForm, Rule, useForm } from '@/components/Form';
   import { formSchema } from './activity.data';
   import { addActivity,updateActivity } from '@/api/point/activity';
+  import { RangePicker } from 'ant-design-vue'
+  import dayjs from 'dayjs'
 
   export default defineComponent({
     name: 'JobGradeModal',
-    components: { BasicModal, BasicForm },
+    components: { BasicModal, BasicForm,RangePicker },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
@@ -26,6 +32,9 @@
         await resetFields();
         setModalProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
+        if(data.record.startTime!==null){
+          data.record.time = [dayjs(data.record.startTime),dayjs(data.record.endTime)]
+        }
         let typeName
         for (const item of data.typeList) {
           if(data.record.type === item.id)
@@ -44,6 +53,14 @@
         const values = await validate();
         try {
           setModalProps({ confirmLoading: true });
+          if(values.time){
+            values.startTime = values.time[0]
+            values.endTime = values.time[1]
+          }else{
+            values.startTime = null
+            values.endTime = null
+          }
+          delete values.time
           delete values.typeName
             if(isUpdate.value){
               await updateActivity(values)

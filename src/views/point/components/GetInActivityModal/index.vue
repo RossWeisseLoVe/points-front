@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal">
+  <BasicModal v-bind="$attrs" @register="registerModal" :destroyOnClose="true">
     <div :style="{display:'flex',justifyContent:'center'}" class="mb-5">
       <Steps :current="current" :items="items" :style="{width:'70%'}"></Steps>
     </div>
@@ -13,6 +13,10 @@
       </template>
       <template #maxPerHead="{record}">
         <Tag color="green">最多{{ record.max }}次</Tag>
+      </template>
+      <template #inventory="{record}">
+        <Tag v-if="record.inventory===0" color="red" >{{ record.inventory }}</Tag>
+        <Tag color="green" v-else>{{ record.inventory }}</Tag>
       </template>
         <template #type="{record}">
           <Tag :color="getColor(record)">{{ getType(record) }}</Tag>
@@ -91,6 +95,9 @@ const [registerTable, { reload,setProps }] = useTable({
       showAdvancedButton: false,
       showResetButton: false,
       autoSubmitOnEnter: true,
+    },
+    searchInfo:{
+      onlyOnsale: true
     },
     canColDrag: true,
     useSearchForm: true,
@@ -222,7 +229,7 @@ function openNotification(){
           size: 'small',
           onClick: () => {
             notification.close(key)
-            emit('pushTo',record.value.id)
+            emit('pushTo',record.value)
           },
         },
         { default: () => '查看积分记录' },

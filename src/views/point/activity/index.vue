@@ -18,6 +18,42 @@
                 auth: 'Activity:'+PerEnum.UPDATE,
               },
               {
+                tooltip: '定时发布',
+                icon: 'ant-design:field-time-outlined',
+                onClick: handleTimed.bind(null, record,1),
+                auth: 'Activity:'+PerEnum.UPDATE,
+                ifShow: record.timedStatus === 0
+              },
+              {
+                tooltip: '取消定时发布',
+                icon: 'ant-design:field-time-outlined',
+                onClick: handleTimed.bind(null, record,0),
+                color: 'error',
+                auth: 'Activity:'+PerEnum.UPDATE,
+                ifShow: record.timedStatus === 1
+              },
+              {
+                tooltip: '开始活动',
+                icon: 'ant-design:caret-right-outlined',
+                onClick: handleChangeStatus.bind(null, record,1),
+                auth: 'Activity:'+PerEnum.PUBLISH,
+                ifShow: record.status !== 1 
+              },
+              {
+                tooltip: '停止活动',
+                icon: 'ant-design:pause-outlined',
+                color: 'error',
+                onClick: handleChangeStatus.bind(null, record,2),
+                auth: 'Activity:'+PerEnum.PUBLISH,
+                ifShow: record.status === 1 
+              },
+              {
+                tooltip: '兑换历史',
+                icon: 'ant-design:read-outlined',
+                onClick: pushToHistory.bind(null, record,1),
+                auth: 'Activity:'+PerEnum.QUERY,
+              },
+              {
                 tooltip: '删除',
                 icon: 'ant-design:delete-outlined',
                 auth: 'Activity:'+PerEnum.DELETE,
@@ -38,15 +74,29 @@
       <template #maxPerHead="{record}">
         <Tag color="green">最多{{ record.max }}次</Tag>
       </template>
+      <template #inventory="{record}">
+        <Tag v-if="record.inventory===0" color="red" >{{ record.inventory }}</Tag>
+        <Tag color="green" v-else>{{ record.inventory }}</Tag>
+      </template>
+      <template #status="{record}">
+        <Tag color="#ffb74e" v-if="record.status === 0">未开始</Tag>
+        <Tag color="#2097f3" v-if="record.status === 1">已开始</Tag>
+        <Tag color="#4b4b4b" v-if="record.status === 2">已结束</Tag>
+      </template>
+      <template #time="{record}">
+        <Tag color="green" v-if="record.timedStatus===1">{{ record.startTime }} 至 {{ record.endTime }}</Tag>
+        <Tag color="default" v-else>{{ record.startTime }} 至 {{ record.endTime }}</Tag>
+      </template>
     </BasicTable>
+    <contextHolder />
     <ActivityModal @register="registerModal" @success="handleSuccess" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-  import { Tag } from 'ant-design-vue'
+  import { Tag,notification } from 'ant-design-vue'
   import {  onMounted, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getActivityPage,deleteActivityByIds } from "@/api/point/activity"
+  import { getActivityPage,deleteActivityByIds,updateActivity,setTimedStatus } from "@/api/point/activity"
   import { PageWrapper } from '@/components/Page';
   import TypeList from '@/views/components/leftTree/TypeList.vue';
   import { useModal } from '@/components/Modal';
@@ -55,6 +105,9 @@
   import { columns, searchFormSchema } from './activity.data';
   import { useMessage } from '@/hooks/web/useMessage';
   import { PerEnum } from '@/enums/perEnum';
+  import { useGo } from '@/hooks/web/usePage';
+
+const go = useGo()
   const { createMessage } = useMessage();
   const [registerModal, { openModal, setModalProps }] = useModal();
   const currentTreeNode = ref<String>("");
@@ -76,7 +129,7 @@
     bordered: true,
     showIndexColumn: false,
     actionColumn: {
-      width: 160,
+      width: 180,
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
@@ -150,6 +203,34 @@
     }
   }
 
+  async function handleTimed(record,status){
+    await setTimedStatus({
+      id:record.id,
+      status
+    })
+    reload()
+    if(status===1){
+      openNotification('topRight',record.startTime,record.name)
+    }
+  }
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (placement,time,name) => {
+        api.info({
+          message: `活动开始提醒： ${name}`,
+          description:
+            '您已设定活动开始时间为：'+time+'届时该活动将自动开始',
+          placement,
+        });
+      };
+  async function handleChangeStatus(row,status){
+    await updateActivity({
+      id:row.id,
+      status
+    })
+    reload()
+  }
 
+  function pushToHistory(record){
+    go('/point/history?aid='+record.id+"&title="+record.name)
+  }
 </script>
-./activity.data

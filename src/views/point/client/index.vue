@@ -28,7 +28,7 @@
               },
               {
                 tooltip: '积分历史',
-                icon: 'ant-design:field-time-outlined',
+                icon: 'ant-design:read-outlined',
                 onClick: handlePushToHistory.bind(null, record),
                 auth: 'Client:'+PerEnum.UPDATE,
               },
@@ -194,11 +194,11 @@
     }
   }
 
-  function pushToHistory(id){
-    go('/point/history?cid='+id)
+  function pushToHistory(record){
+    go('/point/history?cid='+record.id,+"&title="+record.name)
   }
 
   function handlePushToHistory(record){
-    go('/point/history?cid='+record.id)
+    go('/point/history?cid='+record.id+"&title="+record.name)
   }
 </script>

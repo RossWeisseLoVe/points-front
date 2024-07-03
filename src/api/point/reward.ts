@@ -3,7 +3,8 @@ import {defHttp} from '/@/utils/http/axios';
 enum Api {
   Page = '/flow/customer/goods/page',
   Add = '/flow/customer/goods/add',
-  Update = '/flow/customer/goods/update'
+  Update = '/flow/customer/goods/update',
+  SetTimedStatus = '/flow/customer/goods/setTimedStatus'
 }
 /* 新增奖品 */
 export const add = (params) =>
@@ -32,3 +33,7 @@ export const getRewardPage = (params) => {
 /* 删除奖品 */
 export const deleteRewardByIds = (params) =>
   defHttp.post({url: Api.Add, params});
+
+  // 设置定时发布
+export const setTimedStatus = (params) =>
+  defHttp.get({url: Api.SetTimedStatus+'/'+params.id+'/'+params.status});

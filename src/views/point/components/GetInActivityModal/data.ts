@@ -28,6 +28,13 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
+    title: '活动名额',
+    dataIndex: 'inventory',
+    slots: { customRender: 'inventory' },
+    width: 90,
+    align: 'left',
+  },
+  {
     title: '类型',
     dataIndex: 'type',
     slots: { customRender: 'type' },

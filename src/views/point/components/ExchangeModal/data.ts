@@ -18,13 +18,20 @@ export const columns: BasicColumn[] = [
   {
     title: '名称',
     dataIndex: 'name',
-    width: 200,
+    width: 150,
     align: 'left',
   },
   {
     title: '所需积分',
     dataIndex: 'point',
     width: 120,
+    align: 'left',
+  },
+  {
+    title: '库存',
+    dataIndex: 'inventory',
+    slots: { customRender: 'inventory' },
+    width: 90,
     align: 'left',
   },
   {

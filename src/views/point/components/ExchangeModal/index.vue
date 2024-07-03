@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal">
+  <BasicModal v-bind="$attrs" @register="registerModal" :destroyOnClose="true">
     <div :style="{display:'flex',justifyContent:'center'}" class="mb-5">
       <Steps :current="current" :items="items" :style="{width:'70%'}"></Steps>
     </div>
@@ -12,7 +12,11 @@
           </div>
       </template>
       <template #maxPerHead="{record}">
-        <Tag color="green">最多{{ record.max }}次</Tag>
+        <Tag color="green">最多{{ record.maxPerHead }}次</Tag>
+      </template>
+      <template #inventory="{record}">
+        <Tag v-if="record.inventory===0" color="red" >{{ record.inventory }}</Tag>
+        <Tag color="green" v-else>{{ record.inventory }}</Tag>
       </template>
         <template #type="{record}">
           <Tag :color="getColor(record)">{{ getType(record) }}</Tag>
@@ -34,7 +38,7 @@
         :style="{width:'100%'}"
       >
         <FormItem ref="num" label="兑换数量" name="num"  :wrapperCol="{ span : 1}">
-          <InputNumber v-model:value="formData.num" :min="formData.minPerDay" :max="formData.maxPerDay"/>
+          <InputNumber v-model:value="formData.num" :min="getMin()" :max="getMax()"/>
         </FormItem>
         <FormItem ref="instructions" label="积分获取说明" name="instructions">
           <TextArea v-model:value="formData.instructions" showCount :autosize="{minRows:6}" />
@@ -96,7 +100,7 @@ import { exchange,getRewardsTimesRemain } from '@/api/point/orders'
 const TextArea = Input.TextArea
 const labelCol = { span: 7 };
 const wrapperCol = { span: 13 };
-const [registerTable, { reload,setProps }] = useTable({
+const [registerTable, { reload,setProps,clearSelectedRowKeys }] = useTable({
     title: '列表',
     api: getRewardPage,
     immediate: true,
@@ -111,6 +115,9 @@ const [registerTable, { reload,setProps }] = useTable({
     canColDrag: true,
     useSearchForm: true,
     clickToRowSelect:true,
+    searchInfo:{
+      onlyOnsale: true
+    },
     rowSelection: {
       type: 'radio',
     },
@@ -128,8 +135,9 @@ const formData = reactive({
   instructions: '',
   num: 1,
   minPerDay: 0,
-  maxPerDay: 0,
-  max: undefined
+  maxPerDay: 0,   //每次交易最多买几个
+  max: undefined,  //每人最多买几个
+  inventory: 0  //库存
 })
 const timeAlready = ref(0)
 const okButtonText = ref('下一步')
@@ -176,10 +184,10 @@ function selectionChange({keys,rows}){
   formData.selectedType = rows[0].type
   formData.selectedName = rows[0].name
   formData.selectedPoint = rows[0].point
-  formData.max = rows[0].max
+  formData.max= rows[0].maxPerHead
   formData.minPerDay = rows[0].min
   formData.maxPerDay = rows[0].max
-  formData.num = rows[0].min
+  formData.inventory = rows[0].inventory
 }
 
 onMounted(async ()=>{
@@ -200,9 +208,13 @@ async function handleNext() {
       decreaseType: formData.selectedId
     })
     timeAlready.value = res
+    if(formData.inventory===0){
+      return message.warning(`该奖品暂无库存，无法继续兑换`)
+    }
     if(formData.max > res){
       cancelButtonVisible.value = true
       current.value = 1
+      formData.num = getMin()
     }else{
       return message.warning(`用户${record.value.name}兑换该奖品次数已达上限，无法继续兑换`)
     }
@@ -230,6 +242,15 @@ async function handleNext() {
     init()
   }
 }
+
+function getMin(){
+  return Math.min(formData.minPerDay, formData.max - timeAlready.value, formData.inventory)
+}
+
+function getMax(){
+  return Math.min(formData.max - timeAlready.value,formData.maxPerDay, formData.inventory)
+}
+
 function openNotification(){
   const key = `open${Date.now()}`;
   notification.open({
@@ -264,6 +285,8 @@ function init(){
     formData.maxPerDay = 0
     formData.max = undefined
     formData.instructions = ''
+    formData.inventory = 0
+    clearSelectedRowKeys()
     formRef.value = 0
     okButtonText.value = '下一步'
 }

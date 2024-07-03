@@ -60,10 +60,10 @@
               await updateReward(values)
             }else{
               await add(values)
+              openNotification('topRight',values.startTime,values.name)
             }
             closeModal();
             emit('success');
-            openNotification('topRight',values.startTime,values.name)
         } finally {
           setModalProps({ confirmLoading: false });
         }
