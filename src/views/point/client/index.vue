@@ -195,7 +195,7 @@
   }
 
   function pushToHistory(record){
-    go('/point/history?cid='+record.id,+"&title="+record.name)
+    go('/point/history?cid='+record.id+"&title="+record.name)
   }
 
   function handlePushToHistory(record){

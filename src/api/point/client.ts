@@ -5,6 +5,8 @@ enum Api {
   Add = '/flow/customer/client/add',
   Update = '/flow/customer/client/update',
   Delete = '/flow/customer/client/deleteByIds',
+  GetUserPointTopTen = '/flow/customer/client/getUserPointTopTen',
+  GetUserPointUsedTopTen = '/flow/customer/client/getUserPointUsedTopTen'
 }
 
 export const getClientPage = (params) => {
@@ -30,3 +32,9 @@ export const update = (params) =>
 
 export const deleteByIds = (params) =>
   defHttp.post({url: Api.Delete, params});
+
+export const getUserPointTopTen = () =>
+  defHttp.get({url: Api.GetUserPointTopTen});
+
+export const getUserPointUsedTopTen = (status) =>
+  defHttp.get({url: Api.GetUserPointUsedTopTen+'/'+status});

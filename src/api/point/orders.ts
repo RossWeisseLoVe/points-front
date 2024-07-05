@@ -7,6 +7,7 @@ enum Api {
   Exchange = '/flow/customer/orders/exchange',
   GetRewardsTimesRemain = '/flow/customer/orders/getRewardsTimesRemain',
   GetHomeData = '/flow/customer/orders/getHomeData',
+  GetExchangeAnalysis = '/flow/customer/orders/getExchangeAnalysis',
 }
 /* 新增订单 */
 export const save = (params) =>
@@ -24,6 +25,13 @@ export const getRewardsTimesRemain = (params)=>
   defHttp.get({
     url: Api.GetRewardsTimesRemain + '/' + params.cid + '/' + params.decreaseType
   })
+
+export const getExchangeAnalysis = ()=>
+  defHttp.get({
+    url: Api.GetExchangeAnalysis
+  })
+
+
 
 export const getHistoryPage = (params) => {
   const query = {

@@ -1,3 +1,5 @@
+import { BasicColumn } from '@/components/Table';
+
 export interface GrowCardItem {
   icon: string;
   title: string;
@@ -27,20 +29,56 @@ export const growCardList: GrowCardItem[] = [
     action: '月',
     totalLabel: "历史积分兑换量"
   },
+];
+
+export const columns: BasicColumn[] = [
   {
-    title: '下载数',
-    icon: 'download-count|svg',
-    value: 8000,
-    total: 120000,
-    color: 'orange',
-    action: '周',
+    title: '姓名',
+    dataIndex: 'name',
+    width: 100,
+    align: 'left',
   },
   {
-    title: '成交数',
-    icon: 'transaction|svg',
-    value: 5000,
-    total: 50000,
-    color: 'purple',
-    action: '年',
+    title: '积分余额',
+    dataIndex: 'point',
+    width: 100,
+    align: 'left',
+  },
+  {
+    title: '电话',
+    dataIndex: 'mobile',
+    width: 110,
+    align: 'left',
+  },
+  {
+    title: '客户类型',
+    dataIndex: 'type',
+    width: 100,
+    align: 'left',
+    slots: { customRender: 'type' },
+  },
+  {
+    title: '地址',
+    dataIndex: 'address',
+    width: 100,
+    align: 'left',
+  },
+  // {
+  //   title: '所在公司',
+  //   dataIndex: 'company',
+  //   width: 100,
+  //   align: 'left',
+  // },
+  // {
+  //   title: '行业',
+  //   dataIndex: 'industry',
+  //   width: 70,
+  //   align: 'left',
+  // },
+  {
+    title: '备注',
+    dataIndex: 'remarks',
+    width: 120,
+    align: 'left',
   },
 ];

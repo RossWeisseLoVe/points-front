@@ -1,12 +1,13 @@
 <template>
-  <Card title="访问来源" :loading="loading">
+  <Card title="兑换分析" :loading="loading">
     <div ref="chartRef" :style="{ width, height }"></div>
   </Card>
 </template>
 <script lang="ts" setup>
-  import { Ref, ref, watch } from 'vue';
+  import { Ref, ref, watch,onMounted } from 'vue';
   import { Card } from 'ant-design-vue';
   import { useECharts } from '@/hooks/web/useECharts';
+  import { getExchangeAnalysis } from '@/api/point/orders'
 
   const props = defineProps({
     loading: Boolean,
@@ -21,14 +22,7 @@
   });
   const chartRef = ref<HTMLDivElement | null>(null);
   const { setOptions } = useECharts(chartRef as Ref<HTMLDivElement>);
-
-  watch(
-    () => props.loading,
-    () => {
-      if (props.loading) {
-        return;
-      }
-      setOptions({
+  const options = {
         tooltip: {
           trigger: 'item',
         },
@@ -38,8 +32,8 @@
         },
         series: [
           {
-            color: ['#5ab1ef', '#b6a2de', '#67e0e3', '#2ec7c9'],
-            name: '访问来源',
+            color: [],
+            name: '奖品类型',
             type: 'pie',
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
@@ -63,10 +57,6 @@
               show: false,
             },
             data: [
-              { value: 1048, name: '搜索引擎' },
-              { value: 735, name: '直接访问' },
-              { value: 580, name: '邮件营销' },
-              { value: 484, name: '联盟广告' },
             ],
             animationType: 'scale',
             animationEasing: 'exponentialInOut',
@@ -75,8 +65,23 @@
             },
           },
         ],
-      });
-    },
-    { immediate: true },
-  );
+      }
+    onMounted(()=>{
+      exchangeAnalysis()
+    })
+
+    async function exchangeAnalysis() {
+      const res = await getExchangeAnalysis()
+      let i = 0
+      for (const item of res) {
+        options.series[0].color[i] = item.color
+        options.series[0].data[i] = {
+          value:item.point,
+          name: item.cname
+        }
+        i++
+      }
+      setOptions(options)
+    }
+
 </script>
