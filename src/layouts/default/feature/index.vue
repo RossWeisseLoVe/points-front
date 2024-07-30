@@ -1,10 +1,10 @@
 <template>
   <LayoutLockPage />
   <BackTop v-if="getUseOpenBackTop" :target="getTarget" />
-  <SettingDrawer
+  <!-- <SettingDrawer
     v-if="getIsFixedSettingDrawer && (!getShowMultipleTab || getFullContent)"
     :class="prefixCls"
-  />
+  /> -->
   <SessionTimeoutLogin v-if="getIsSessionTimeout" />
 </template>
 <script lang="ts" setup>

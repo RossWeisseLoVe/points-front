@@ -11,7 +11,7 @@
 
     <template #overlay>
       <Menu @click="handleMenuClick">
-        <MenuItem
+        <!-- <MenuItem
           key="official"
           text="官网"
           icon="ant-design:laptop-outlined"
@@ -44,9 +44,8 @@
           key="api"
           :text="t('layout.header.dropdownChangeApi')"
           icon="ant-design:swap-outlined"
-        />
+        /> -->
         <MenuItem
-          v-if="getUseLockPage"
           key="lock"
           :text="t('layout.header.tooltipLock')"
           icon="ion:lock-closed-outline"

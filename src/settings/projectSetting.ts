@@ -36,7 +36,8 @@ const setting: ProjectConfig = {
   sessionTimeoutProcessing: SessionTimeoutProcessingEnum.ROUTE_JUMP,
 
   // color
-  themeColor: APP_PRESET_COLOR_LIST[0],
+  // themeColor: APP_PRESET_COLOR_LIST[0],
+  themeColor: "#009688",
 
   // Website gray mode, open for possible mourning dates
   grayMode: false,
@@ -59,7 +60,7 @@ const setting: ProjectConfig = {
   // Header configuration
   headerSetting: {
     // header bg color
-    bgColor: HEADER_PRESET_BG_COLOR_LIST[0],
+    bgColor: "#009688",
     // Fixed at the top
     fixed: true,
     // Whether to show top
@@ -101,9 +102,9 @@ const setting: ProjectConfig = {
     // Menu width
     menuWidth: 210,
     // Menu mode
-    mode: MenuModeEnum.INLINE,
+    mode: MenuModeEnum.HORIZONTAL,
     // Menu type
-    type: MenuTypeEnum.SIDEBAR,
+    type: MenuTypeEnum.TOP_MENU,
     // Menu theme
     theme: ThemeEnum.DARK,
     // Split menu

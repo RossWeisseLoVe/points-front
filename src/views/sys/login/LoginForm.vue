@@ -37,7 +37,8 @@
       <ACol :span="12">
         <FormItem :style="{ 'text-align': 'right' }">
           <!-- No logic, you need to deal with it yourself -->
-          <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
+          <!-- <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)"> -->
+          <Button type="link" size="small" @click="forgetCode">
             {{ t('sys.login.forgetPassword') }}
           </Button>
         </FormItem>
@@ -52,7 +53,7 @@
         {{ t('sys.login.registerButton') }}
       </Button> -->
     </FormItem>
-    <ARow class="enter-x" :gutter="[16, 16]">
+    <!-- <ARow class="enter-x" :gutter="[16, 16]">
       <ACol :md="8" :xs="24">
         <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
           {{ t('sys.login.mobileSignInFormTitle') }}
@@ -68,23 +69,23 @@
           {{ t('sys.login.registerButton') }}
         </Button>
       </ACol>
-    </ARow>
+    </ARow> -->
 
-    <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
+    <!-- <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider> -->
 
-    <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
+    <!-- <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
       <GithubFilled />
       <WechatFilled />
       <AlipayCircleFilled />
       <GoogleCircleFilled />
       <TwitterCircleFilled />
-    </div>
+    </div> -->
   </Form>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, unref, computed } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
+  import { Checkbox, Form, Input, Row, Col, Button, message } from 'ant-design-vue';
   import {
     GithubFilled,
     WechatFilled,
@@ -119,8 +120,8 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    account: '10101',
-    password: '888888',
+    account: '',
+    password: '',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -128,6 +129,10 @@
   //onKeyStroke('Enter', handleLogin);
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
+
+  function forgetCode(){
+    message.info("请联系管理员更改密码")
+  }
 
   async function handleLogin() {
     const data = await validForm();
