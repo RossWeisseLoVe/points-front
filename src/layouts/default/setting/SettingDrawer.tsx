@@ -134,15 +134,15 @@ export default defineComponent({
       );
     }
 
-    function renderMainTheme() {
-      return (
-        <ThemeColorPicker
-          colorList={APP_PRESET_COLOR_LIST}
-          def={unref(getThemeColor)}
-          event={HandlerEnum.CHANGE_THEME_COLOR}
-        />
-      );
-    }
+    // function renderMainTheme() {
+    //   return (
+    //     <ThemeColorPicker
+    //       colorList={APP_PRESET_COLOR_LIST}
+    //       def={unref(getThemeColor)}
+    //       event={HandlerEnum.CHANGE_THEME_COLOR}
+    //     />
+    //   );
+    // }
 
     /**
      * @description:
@@ -415,7 +415,7 @@ export default defineComponent({
         <Divider>{() => t('layout.setting.navMode')}</Divider>
         {renderSidebar()}
         <Divider>{() => t('layout.setting.sysTheme')}</Divider>
-        {renderMainTheme()}
+        {/* {renderMainTheme()} */}
         <Divider>{() => t('layout.setting.headerTheme')}</Divider>
         {renderHeaderTheme()}
         <Divider>{() => t('layout.setting.sidebarTheme')}</Divider>

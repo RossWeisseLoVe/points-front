@@ -17,7 +17,8 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/dragon-api': {
-          target: 'http://123.56.103.129:80/',
+          target: 'http://localhost:8988/',
+          // target: 'http://123.56.103.129:80/',
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/dragon-api`), ''),
