@@ -13,13 +13,13 @@
         </template>
 
         <div class="py-4 px-4 flex justify-between items-center mb-5">
-          <CountTo prefix="$" :startVal="1" :endVal="item.value" class="text-2xl" />
+          <CountTo prefix="$" :startVal="0" :endVal="item.value" class="text-2xl" />
           <Icon :icon="item.icon" :size="40" />
         </div>
 
         <div class="p-2 px-4 flex justify-between">
           <span>{{ item.totalLabel }}</span>
-          <CountTo prefix="$" :startVal="1" :endVal="item.total" />
+          <CountTo prefix="$" :startVal="0" :endVal="item?.total" />
         </div>
       </Card>
     </template>
@@ -45,10 +45,10 @@
   onMounted(async ()=>{
     currentYearMonth.value = dayjs().format('YYYY-MM');
     const res = await getHomeData()
-    dataList.value[0].value = res.monthPointOut
-    dataList.value[0].total = res.totalPointOut
-    dataList.value[1].value = res.monthPointIn
-    dataList.value[1].total = res.totalPointIn
+    dataList.value[0].value = res.monthPointOut === null ? 0:res.monthPointOut
+    dataList.value[0].total = res.totalPointOut === null ? 0:res.totalPointOut
+    dataList.value[1].value = res.monthPointIn === null ? 0:res.monthPointIn
+    dataList.value[1].total = res.totalPointIn === null ? 0:res.totalPointIn
   })
 
 
