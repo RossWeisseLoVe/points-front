@@ -2,7 +2,7 @@
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm" >
         <template #rangePicker="data">
-          <RangePicker v-model:value="data.model.time" show-time/>
+          <RangePicker v-model:value="data.model.time" show-time :disabled-date="getDisabled"/>
         </template>
     </BasicForm>
   </BasicModal>
@@ -27,6 +27,12 @@
         schemas: formSchema,
         showActionButtonGroup: false,
       });
+
+      function getDisabled(day){
+        const currentTime = dayjs();
+        const oneYearLater = currentTime.add(1, 'year');
+        return !(day.isAfter(currentTime) && day.isBefore(oneYearLater))
+      }
 
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         await resetFields();
@@ -74,7 +80,7 @@
         }
       }
 
-      return { registerModal, registerForm, getTitle, handleSubmit };
+      return { registerModal, registerForm, getTitle, handleSubmit,getDisabled };
     },
   });
 </script>

@@ -2,7 +2,7 @@
   <BasicModal v-bind="$attrs" @register="registerModal" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm" >
         <template #rangePicker="data">
-          <RangePicker v-model:value="data.model.time" show-time/>
+          <RangePicker v-model:value="data.model.time" show-time :disabled-date="getDisabled"/>
         </template>
     </BasicForm>
   </BasicModal>
@@ -78,4 +78,9 @@
         });
       };
 
+function getDisabled(day){
+  const currentTime = dayjs();
+  const oneYearLater = currentTime.add(1, 'year');
+  return !(day.isAfter(currentTime) && day.isBefore(oneYearLater))
+}
 </script>
