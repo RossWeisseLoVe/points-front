@@ -4,9 +4,9 @@
     <!-- <BasicTable @register="registerTable" class="w-3/4 xl:w-6/7"> -->
     <BasicTable @register="registerTable" class="">
       <template #toolbar>
-        <!-- <Authority :value="'Activity:'+PerEnum.ADD" >
-          <a-button type="primary" @click="handleCreate"> 新增</a-button>
-        </Authority> -->
+        <Authority :value="'Calculate:'+PerEnum.PUBLISH" >
+          <a-button type="primary" @click="handleRefresh"> 重载规则</a-button>
+        </Authority>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -16,7 +16,7 @@
                 tooltip: '试用',
                 icon: 'ant-design:caret-right-outlined',
                 onClick: handleTest.bind(null, record),
-                auth: 'Activity:'+PerEnum.QUERY,
+                auth: 'Calculate:'+PerEnum.QUERY,
               },
             ]"
           />
@@ -124,6 +124,10 @@ const go = useGo()
 
   function handleSuccess(){
 
+  }
+
+  function handleRefresh(){
+    
   }
 
   function getType(row){
