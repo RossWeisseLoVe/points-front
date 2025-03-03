@@ -1,9 +1,11 @@
 <template>
-  <ConfigProvider :locale="getAntdLocale" :theme="themeConfig">
-    <AppProvider>
-      <RouterView />
-    </AppProvider>
-  </ConfigProvider>
+   <DndProvider :backend="HTML5Backend">
+    <ConfigProvider :locale="getAntdLocale" :theme="themeConfig">
+      <AppProvider>
+        <RouterView />
+      </AppProvider>
+    </ConfigProvider>
+  </DndProvider>
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +13,8 @@
   import { useTitle } from '@/hooks/web/useTitle';
   import { useLocale } from '@/locales/useLocale';
   import { ConfigProvider } from 'ant-design-vue';
-
+  import { DndProvider } from 'vue3-dnd'
+  import { HTML5Backend } from 'react-dnd-html5-backend'
   import { useDarkModeTheme } from '@/hooks/setting/useDarkModeTheme';
   import 'dayjs/locale/zh-cn';
   import {computed, h} from 'vue';
