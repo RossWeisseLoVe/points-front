@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { useDrag } from 'vue3-dnd'
 import { buildUUID } from '@/utils/uuid.ts'
+import{ ItemTypes} from "../data.ts"
 
 const props = defineProps({
     item: Object
@@ -20,12 +21,21 @@ function getClassName(item){
   return list[list.length - 1]
 }
 
+
 const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
-	type: 'BOX',
+	type: ItemTypes.BOX,
 	item: ()=>({
     id: buildUUID(),
     info: props.item
-  })
+  }),
+  end: (item, monitor) => {
+    const { id: droppedId, originalIndex } = item
+    const didDrop = monitor.didDrop()
+    console.log('didDrop', didDrop)
+    if (!didDrop) {
+
+      }
+  },
 }))
 
 
