@@ -5,6 +5,7 @@ enum Api {
     GetPropertiesById = '/flow/generate/property/getPropertiesById',
     GetResult = '/flow/test/calculate/getResult',
     Reload  = '/flow/test/calculate/reload',
+    GetAllRulesWithProperty = '/flow/generate/class/getAllRulesWithProperty',
 }
 
 
@@ -19,6 +20,7 @@ export const getResult = (params) =>
 
 export const reloadAll = () =>
   defHttp.post({url: Api.Reload});
-// export const deleteActivityByIds = (params) =>
-//   defHttp.post({url: Api.DeleteActivityByIds, params});
+
+export const getAllRulesWithProperty = () =>
+  defHttp.get({url: Api.GetAllRulesWithProperty});
 

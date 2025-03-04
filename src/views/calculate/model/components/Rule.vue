@@ -9,6 +9,7 @@
 </template>
 <script lang="ts" setup>
 import { useDrag } from 'vue3-dnd'
+import { buildUUID } from '@/utils/uuid.ts'
 
 const props = defineProps({
     item: Object
@@ -21,7 +22,10 @@ function getClassName(item){
 
 const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	type: 'BOX',
-	item: { id: '1' },
+	item: ()=>({
+    id: buildUUID(),
+    info: props.item
+  })
 }))
 
 
