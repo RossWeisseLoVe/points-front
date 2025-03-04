@@ -18,11 +18,13 @@
 <script lang="ts" setup>
 import { Avatar } from "ant-design-vue"
 import { useDrop } from 'vue3-dnd'
-import { ref } from "vue"
+import { ref,onMounted } from "vue"
 import {ItemTypes} from "../../data.ts"
 import TransformerDrag from "./TransformerDrag.vue"
+import { useCalculateStore } from "@/store/modules/calculate"
 
 const transformerList = ref([])
+const calculateStore = useCalculateStore()
 
 const [collectedProps, drop] = useDrop(() => ({
 	accept: [ItemTypes.BOX,ItemTypes.CONVERT],
@@ -39,10 +41,15 @@ function dropFunc(obj){
   insertCard(obj,obj.id,nowHoverIndex.value)
   console.log(obj)
   nowHoverIndex.value = transformerList.value.length
+  calculateStore.callMethod("deleteItem-provider",obj.id)
+  calculateStore.callMethod("deleteItem-reciver",obj.id)
 }
 
 function deleteItem(id: string){
   const { index } = findCard(id)
+  if(index<0){
+    return
+  }
   transformerList.value.splice(index, 1)
 }
 
@@ -58,6 +65,8 @@ function moveCard(id: string, atIndex: number){
   const { card, index } = findCard(id)
   transformerList.value.splice(index, 1)
   transformerList.value.splice(atIndex, 0, card)
+  calculateStore.callMethod("deleteItem-provider",id)
+  calculateStore.callMethod("deleteItem-reciver",id)
 }
 
 function insertCard(card,id,atIndex){
@@ -70,8 +79,13 @@ function insertCard(card,id,atIndex){
     // 如果不是第一次插入，就要把之前插入的删掉，再重新插入，才会有移动的视觉效果，也不会出现错误
     transformerList.value.splice(res.index, 1)
     transformerList.value.splice(atIndex, 0, card)
+    calculateStore.callMethod("deleteItem-provider",id)
+    calculateStore.callMethod("deleteItem-reciver",id)
   }
 }
+onMounted(() => {
+  calculateStore.registerMethod('deleteItem-transformer', deleteItem);
+});
 
 </script>
 <style scoped lang="less">

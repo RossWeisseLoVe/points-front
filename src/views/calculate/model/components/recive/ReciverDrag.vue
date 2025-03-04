@@ -2,15 +2,14 @@
     <div :ref="node => drag(drop(node))" class="provider-box" >
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
       <div class="provider-header">
-        <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
+        <Avatar style="background-color: #1890ff" size="small" class="class-avatar">
           {{ getAvatar(provider) }}
         </Avatar>
         <div>{{ provider.info.description }}</div>
       </div>
       <div class="item-container">
         <div v-for="item in provider.info.properties" :key="item.id">
-          <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-          <ReciverItem v-else :item="item" :id="provider.id"/>
+          <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"/>
         </div>
       </div>
     </div>
@@ -20,7 +19,7 @@ import { Avatar } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
 import ProviderItem from "../provide/ProviderItem.vue"
-import ReciverItem from "../recive/ReciverItem.vue"
+import ReciverItem from "./ReciverItem.vue"
 import { ItemTypes } from '../../data.ts'
 import {
   DeleteTwoTone

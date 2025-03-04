@@ -6,9 +6,10 @@
           {{ getAvatar(provider) }}
         </Avatar>
         <div>{{ provider.info.description }}</div>
-        <div>{{ provider.id }}</div>
       </div>
-      <ProviderItem v-for="item in getProviderItemList(provider)" :key="item.id" :item="item" :id="provider.id"/>
+      <div class="item-container" >
+        <ProviderItem v-for="item in getProviderItemList(provider)" :key="item.id" :item="item" :id="provider.id"/>
+      </div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -25,7 +26,6 @@ const props = defineProps({
   findCard: Function,
   insertCard: Function
 })
-
 
 
 const emits =defineEmits(['hoverIndex', 'deleteItem'])
@@ -98,6 +98,7 @@ return list
 const { isDragging } = toRefs(collect)
 const opacity = computed(() => (unref(isDragging) ? 0 : 1))
 
+
 </script>
 <style scoped lang="less">
 
@@ -148,6 +149,10 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
       .class-avatar{
       }
 
+   }
+   .item-container{
+    overflow-y: auto;
+    height: 190px;
    }
   }
 

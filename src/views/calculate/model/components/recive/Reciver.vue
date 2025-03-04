@@ -1,7 +1,8 @@
 <template>
     <div :ref="drop" class="provider-container">
-      <ProvideDrag 
-      v-for="item in providerList" 
+      <img src="@/assets/icons/arrow.svg" alt="" class="arrow-svg up-to-down">    
+      <ReciverDrag 
+      v-for="item in reciverList" 
       :key="item.id" 
       :provider="item" 
       :id="item.id" 
@@ -16,20 +17,17 @@
 <script lang="ts" setup>
 import { Avatar } from "ant-design-vue"
 import { useDrop } from 'vue3-dnd'
-import { ref,onMounted,onUnmounted } from "vue"
+import { ref,onMounted } from "vue"
 import {ItemTypes} from "../../data.ts"
+import ReciverDrag from "./ReciverDrag.vue"
 import { useCalculateStore } from "@/store/modules/calculate"
-import ProvideDrag from "./ProvideDrag.vue"
 
+const reciverList = ref([])
 const calculateStore = useCalculateStore()
-const providerList = ref([])
 
 const [collectedProps, drop] = useDrop(() => ({
-	accept: ItemTypes.BOX,
-  drop: dropFunc,
-  hover(item,monitor){
-    console.log("monitor.isOver()",monitor.isOver())
-  }
+	accept: [ItemTypes.BOX,ItemTypes.CONVERT],
+  drop: dropFunc
 }))
 
 const nowHoverIndex = ref(0)
@@ -38,11 +36,12 @@ function getHoverIndex(index){
   nowHoverIndex.value = index
 }
 
-function dropFunc(obj,monitor){
+function dropFunc(obj){
   insertCard(obj,obj.id,nowHoverIndex.value)
-  nowHoverIndex.value = providerList.value.length
+  console.log(obj)
+  nowHoverIndex.value = reciverList.value.length
+  calculateStore.callMethod("deleteItem-provider",obj.id)
   calculateStore.callMethod("deleteItem-transformer",obj.id)
-  calculateStore.callMethod("deleteItem-reciver",obj.id)
 }
 
 function deleteItem(id: string){
@@ -50,46 +49,49 @@ function deleteItem(id: string){
   if(index<0){
     return
   }
-  providerList.value.splice(index, 1)
+  reciverList.value.splice(index, 1)
 }
 
 function findCard(id: string){
-  const card = providerList.value.filter(c => `${c.id}` === id)[0]
+  const card = reciverList.value.filter(c => `${c.id}` === id)[0]
   return {
     card,
-    index: providerList.value.indexOf(card),
+    index: reciverList.value.indexOf(card),
   }
 }
 
 function moveCard(id: string, atIndex: number){
   const { card, index } = findCard(id)
-  providerList.value.splice(index, 1)
-  providerList.value.splice(atIndex, 0, card)
+  reciverList.value.splice(index, 1)
+  reciverList.value.splice(atIndex, 0, card)
+  calculateStore.callMethod("deleteItem-provider",id)
   calculateStore.callMethod("deleteItem-transformer",id)
-  calculateStore.callMethod("deleteItem-reciver",id)
 }
 
 function insertCard(card,id,atIndex){
   const res = findCard(id)
   if(res.index=== -1){
     // 如果没有这个卡片说明是第一移入，直接插到当前位置
-    providerList.value.splice(atIndex, 0, card)
+    reciverList.value.splice(atIndex, 0, card)
     // 为rules新增一个对象
   }else{
     // 如果不是第一次插入，就要把之前插入的删掉，再重新插入，才会有移动的视觉效果，也不会出现错误
-    providerList.value.splice(res.index, 1)
-    providerList.value.splice(atIndex, 0, card)
+    reciverList.value.splice(res.index, 1)
+    reciverList.value.splice(atIndex, 0, card)
+    calculateStore.callMethod("deleteItem-provider",id)
     calculateStore.callMethod("deleteItem-transformer",id)
-    calculateStore.callMethod("deleteItem-reciver",id)
   }
 }
-
 onMounted(() => {
-  calculateStore.registerMethod('deleteItem-provider', deleteItem);
+  calculateStore.registerMethod('deleteItem-reciver', deleteItem);
 });
 
 </script>
 <style scoped lang="less">
+.arrow-svg{
+    width: 60px;
+    height: 60px;
+}
 .provider-container{
   color: #8c8c8c;
   display: flex;
@@ -100,6 +102,20 @@ onMounted(() => {
   padding: 8px;
   overflow-y: auto;
   transition: box-shadow 0.3s;
+  .up-to-down{
+      position: absolute;
+      z-index: 9999;
+      top: -40px;
+      left: 87.5%;
+      transform: translateX(-50%);
+  }
+  .left-to-right{
+      position: absolute;
+      z-index: 999;
+      top: 50%;
+      right: 25%;
+      transform: translateY(-50%) translateX(50%) rotate(-90deg);
+  }
  }
 
 

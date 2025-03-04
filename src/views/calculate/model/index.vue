@@ -7,9 +7,7 @@
             <Provider class="h-1/2" />
             <div class="w-2/2 h-1/2 bottom">
               <Transformer class="w-3/4 h-2/2" />  
-              <Card class="w-1/4 h-2/2 ">
-                  <img src="@/assets/icons/arrow.svg" alt="" class="arrow-svg up-to-down">    
-              </Card>
+              <Reciver class="w-1/4 h-2/2" />
             </div>
         </div>
     </PageWrapper>
@@ -22,6 +20,7 @@ import { onMounted, ref } from 'vue';
 import Rule from './components/Rule.vue';
 import Provider from "./components/provide/Provider.vue"
 import Transformer from "./components/transformer/Transformer.vue"
+import Reciver from "./components/recive/Reciver.vue"
 
 const ruleList = ref([])
 onMounted(async ()=>{

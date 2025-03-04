@@ -8,6 +8,10 @@
 import { useDrag } from 'vue3-dnd'
 import { buildUUID } from '@/utils/uuid.ts'
 import { ItemTypes } from '../../data.ts'
+import { useCalculateStore } from "@/store/modules/calculate"
+import { watch } from 'vue'
+import { toRefs } from '@vueuse/core'
+const calculateStore = useCalculateStore()
 
 const props = defineProps({
     item: Object,
@@ -19,10 +23,24 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	type: props.item.propertyType,
 	item: ()=>({
     //应该传入所属对象的id
-    id: props.id,
-    info: props.item
-  })
+        objectId: props.id,
+        info: props.item
+    }),
+    collect: monitor => ({
+        dragging: monitor.isDragging()
+    }),
 }))
+const { dragging } = toRefs(collectedProps)
+
+watch(dragging,(value)=>{
+    if(value){
+        calculateStore.activeType = props.item.propertyType
+        calculateStore.activeId = props.id
+    }else{
+        calculateStore.activeType = undefined
+        calculateStore.activeId = undefined
+    }
+})
 
 
 </script>
