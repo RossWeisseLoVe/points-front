@@ -37,7 +37,8 @@ const [collect, drag, dragPreview] = useDrag(() => ({
 	item: ()=>({
     //应该传入所属对象的id
     id: props.id,
-    originalIndex: originalIndex.value
+    originalIndex: originalIndex.value,
+    type: "provider"
   }),
   collect: monitor => ({
     isDragging: monitor.isDragging(),
@@ -55,7 +56,10 @@ const hoverIndex = ref('')
 const [, drop] = useDrop(() => ({
   accept: [ItemTypes.BOX,ItemTypes.SORTBOX],
   hover(item,monitor) {
-    const { id: draggedId } = item
+    const { id: draggedId ,type } = item
+    if(type === "reciver" || type ==="transformer"){
+      return
+    }
     if(monitor.getItemType()===ItemTypes.SORTBOX){
       console.log("draggedId",draggedId)
       console.log("Id",props.id)
