@@ -1,19 +1,19 @@
 <template>
-  <div :class="rotateFlag ? 'rotate-line':''">
-    <div :ref="dragSource" class="provider-item" @click="setSourceObj" v-click-outside="onClickOutside">
-        <div class="mb-1">{{ item.propertyName }}</div>
-        <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
+    <div :class="rotateFlag ? 'rotate-line':''">
+        <div :ref="dragSource" class="provider-item" @click="setSourceObj" v-click-outside="onClickOutside">
+            <!-- <Tag color="#108ee9" class="count-badge">123</Tag> -->
+            <div class="mb-1">{{ item.propertyName }}</div>
+            <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
+        </div>
     </div>
-  </div>
 </template>
 <script lang="ts" setup>
 import { useDrag } from 'vue3-dnd'
-import { buildUUID } from '@/utils/uuid.ts'
-import { ItemTypes } from '../../data.ts'
 import { useCalculateStore } from "@/store/modules/calculate"
 import { watch ,computed} from 'vue'
 import vClickOutside from '@/directives/clickOutside';
 import { toRefs } from '@vueuse/core'
+import { Tag } from "ant-design-vue"
 const calculateStore = useCalculateStore()
 
 const props = defineProps({
@@ -69,10 +69,17 @@ function onClickOutside(){
 .provider-item{
     color: #fff;
     padding: 4px;
-    width: 95%;
+    width: 94%;
     margin: 4px;
     background-color: #87d068;
+    position: relative;
     border-radius: 4px;
+    .count-badge{
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translateX(20%);
+    }
 }
 
   // 转动的边框线(两条)
@@ -86,11 +93,11 @@ function onClickOutside(){
         &::before, &::after {
             content: "";
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border: 2px solid #87d068;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid #f56a00;
             transition: all .5s;
             border-radius: var(--bRadius);
             animation: clippath 3s infinite linear;

@@ -72,12 +72,13 @@ function onClickOutside(){
 .provider-item{
   color: #fff;
   padding: 4px;
-  width: 100%;
+  width: 94%;
+  margin-left: 5px;
   margin-bottom: 4px;
   background-color: #1890ff;
   border-radius: 4px;
   .dropped-item{
-    margin-top: 2px;
+    margin-top: 4px;
     width: 100%;
     color: #fff;
     padding: 4px;
@@ -91,7 +92,7 @@ function onClickOutside(){
     --bRadius: 3px;
     .dropped-item{
         position: relative;
-        margin-top: 2px;
+        margin-top: 4px;
         width: 100%;
         color: #fff;
         padding: 4px;
@@ -103,10 +104,10 @@ function onClickOutside(){
         &::before, &::after {
             content: "";
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
             border: 2px solid #fff;
             transition: all .5s;
             border-radius: var(--bRadius);

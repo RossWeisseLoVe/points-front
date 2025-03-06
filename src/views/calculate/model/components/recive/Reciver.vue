@@ -26,7 +26,7 @@ const reciverList = ref([])
 const calculateStore = useCalculateStore()
 
 const [collectedProps, drop] = useDrop(() => ({
-	accept: [ItemTypes.BOX,ItemTypes.CONVERT],
+	accept: [ItemTypes.BOX],
   drop: dropFunc
 }))
 

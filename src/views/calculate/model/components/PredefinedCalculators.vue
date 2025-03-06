@@ -23,7 +23,7 @@ function getClassName(item){
 
 
 const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
-	type: ItemTypes.BOX,
+	type: ItemTypes.CONVERT,
 	item: ()=>({
     id: buildUUID(),
     info: props.item
@@ -46,9 +46,9 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
   color: #fff;
   background: linear-gradient(
     135deg,
-    #2db7f5 0%,
-    #47c1f7 50%,
-    #1aa3e3 100%
+    #87d068 0%,
+    #9ade7a 50%,
+    #6fba54 100%
   );
   border: 1px solid #f0f0f0;
   border-radius: 8px;

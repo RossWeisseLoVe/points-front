@@ -156,3 +156,49 @@ export const formSchema: FormSchema[] = [
     colProps: { span: 22 },
   },
 ];
+
+
+export const predefinedCalList = [
+  {
+    id: "1231231",
+    description: "求方差",
+    className: "com.dragon.flow.model.test.Variance",
+    properties:[
+      {
+        id:123,
+        formItemName: "输入值",
+        inputOrOutput: "input",
+        propertyName: "in",
+        propertyType: "Double",
+      },
+      {
+        id:124,
+        formItemName: "输出值",
+        inputOrOutput: "output",
+        propertyName: "out",
+        propertyType: "Double",
+      }
+    ]
+  },
+  {
+    id: "1231232",
+    description: "求平方",
+    className: "com.dragon.flow.model.test.Square",
+    properties:[
+      {
+        id:123,
+        formItemName: "输入值",
+        inputOrOutput: "input",
+        propertyName: "in",
+        propertyType: "Double",
+      },
+      {
+        id:124,
+        formItemName: "输出值",
+        inputOrOutput: "output",
+        propertyName: "out",
+        propertyType: "Double",
+      }
+    ]
+  }
+]
