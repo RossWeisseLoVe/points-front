@@ -3,8 +3,8 @@ import {defHttp} from '/@/utils/http/axios';
 enum Api {
     GetAllRules = '/flow/generate/class/getAllRules',
     GetPropertiesById = '/flow/generate/property/getPropertiesById',
-    GetResult = '/flow/test/calculate/getResult',
-    Reload  = '/flow/test/calculate/reload',
+    GetResult = '/flow/calculate/getResult',
+    Reload  = '/flow/calculate/reload',
     GetAllRulesWithProperty = '/flow/generate/class/getAllRulesWithProperty',
 }
 
