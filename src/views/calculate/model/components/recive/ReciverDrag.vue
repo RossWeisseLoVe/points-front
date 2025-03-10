@@ -9,7 +9,7 @@
       </div>
       <div class="item-container">
         <div v-for="item in provider.info.properties" :key="item.id">
-          <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"/>
+          <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation"/>
         </div>
       </div>
     </div>
@@ -98,6 +98,34 @@ return result
 const { isDragging } = toRefs(collect)
 const opacity = computed(() => (unref(isDragging) ? 0 : 1))
 
+function addRelation(sourceObjId,sourcePropertyName,targetPropertyName){
+  if(props.provider.relationIn===undefined){
+    props.provider.relationIn = {}
+  }
+  if(props.provider.relationIn[targetPropertyName]===undefined){
+    props.provider.relationIn[targetPropertyName] = []
+  }
+  props.provider.relationIn[targetPropertyName].push({
+    sourceObjId,sourcePropertyName
+  })
+}
+
+function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
+  if(props.provider.relationIn!==undefined){
+    if(props.provider.relationIn[targetPropertyName]!==undefined){
+      const list = props.provider.relationIn[targetPropertyName]
+      const newList = list.filter(item=>{
+        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
+      })
+      if(newList.length===0){
+        delete props.provider.relationIn[targetPropertyName]
+      }else{
+        props.provider.relationIn[targetPropertyName] = newList
+      }
+    }
+  }
+}
+
 </script>
 <style scoped lang="less">
 
@@ -130,7 +158,7 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
   &:hover .remove-icon {
   opacity: 1;
   visibility: visible;
-}
+  }
   &:active{
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
   }

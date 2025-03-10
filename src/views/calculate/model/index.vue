@@ -17,7 +17,13 @@
             </Collapse>
         </div>
         <div class="w-5/6 drop-container">
-            <Provider class="h-1/2" />
+            <div class="h-1/2 upper">
+                <Provider class="h-full"/>
+                <div class="toolBar">
+                    <Button type="primary" @click="save" class="tool-button">保存</Button>
+                    <Button type="primary"  class="tool-button">检查</Button>
+                </div>
+            </div>
             <div class="w-2/2 h-1/2 bottom">
               <Transformer class="w-3/4 h-2/2" />  
               <Reciver class="w-1/4 h-2/2" />
@@ -27,8 +33,8 @@
 </template>
 <script lang="ts" setup>
 import { PageWrapper } from '@/components/Page';
-import { Card,Collapse,CollapsePanel,Tag } from "ant-design-vue" 
-import { getAllRulesWithProperty,getPropertiesById } from "@/api/calculate/calculate"
+import { Card,Collapse,CollapsePanel,Tag,Button } from "ant-design-vue" 
+import { getAllRulesWithProperty,saveModel } from "@/api/calculate/calculate"
 import { onMounted, ref } from 'vue';
 import Rule from './components/Rule.vue';
 import Provider from "./components/provide/Provider.vue"
@@ -36,7 +42,9 @@ import Transformer from "./components/transformer/Transformer.vue"
 import Reciver from "./components/recive/Reciver.vue"
 import PredefinedCalculators from "./components/PredefinedCalculators.vue"
 import { predefinedCalList } from "../calculate.data"
+import { useCalculateStore } from "@/store/modules/calculate"
 
+const calculateStore = useCalculateStore()
 const ruleList = ref([])
 onMounted(async ()=>{
    const res = await getAllRulesWithProperty()
@@ -48,7 +56,13 @@ function getClassName(item){
   return list[list.length - 1]
 }
 
-
+async function save(){
+  console.log("providerList:",calculateStore.providerList)
+  console.log("transformList:",calculateStore.transformerList)
+  console.log("receiveList:",calculateStore.reciverList)
+  //先将模型内的对象全部序列化
+  await calculateStore.saveCalculateModel()
+}
 
 </script>
 <style scoped lang="less">
@@ -69,6 +83,17 @@ function getClassName(item){
     }
     .drop-container{
         padding-left: 16px;
+        .upper{
+            display: flex;
+            justify-content: right;
+            .toolBar{
+                width: 80px;
+                .tool-button{
+                    margin-left: 10px;
+                    margin-bottom: 20px;
+                }
+            }
+        }
         .bottom{
             display: flex;
             position: relative;

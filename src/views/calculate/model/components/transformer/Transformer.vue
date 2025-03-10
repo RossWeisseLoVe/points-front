@@ -23,8 +23,9 @@ import {ItemTypes} from "../../data.ts"
 import TransformerDrag from "./TransformerDrag.vue"
 import { useCalculateStore } from "@/store/modules/calculate"
 
-const transformerList = ref([])
 const calculateStore = useCalculateStore()
+const transformerList = calculateStore.transformerList
+
 
 const [collectedProps, drop] = useDrop(() => ({
 	accept: [ItemTypes.BOX,ItemTypes.CONVERT],
@@ -40,7 +41,7 @@ function getHoverIndex(index){
 function dropFunc(obj){
   insertCard(obj,obj.id,nowHoverIndex.value)
   console.log(obj)
-  nowHoverIndex.value = transformerList.value.length
+  nowHoverIndex.value = transformerList.length
   calculateStore.callMethod("deleteItem-provider",obj.id)
   calculateStore.callMethod("deleteItem-reciver",obj.id)
 }
@@ -50,21 +51,21 @@ function deleteItem(id: string){
   if(index<0){
     return
   }
-  transformerList.value.splice(index, 1)
+  transformerList.splice(index, 1)
 }
 
 function findCard(id: string){
-  const card = transformerList.value.filter(c => `${c.id}` === id)[0]
+  const card = transformerList.filter(c => `${c.id}` === id)[0]
   return {
     card,
-    index: transformerList.value.indexOf(card),
+    index: transformerList.indexOf(card),
   }
 }
 
 function moveCard(id: string, atIndex: number){
   const { card, index } = findCard(id)
-  transformerList.value.splice(index, 1)
-  transformerList.value.splice(atIndex, 0, card)
+  transformerList.splice(index, 1)
+  transformerList.splice(atIndex, 0, card)
   calculateStore.callMethod("deleteItem-provider",id)
   calculateStore.callMethod("deleteItem-reciver",id)
 }
@@ -73,12 +74,12 @@ function insertCard(card,id,atIndex){
   const res = findCard(id)
   if(res.index=== -1){
     // 如果没有这个卡片说明是第一移入，直接插到当前位置
-    transformerList.value.splice(atIndex, 0, card)
+    transformerList.splice(atIndex, 0, card)
     // 为rules新增一个对象
   }else{
     // 如果不是第一次插入，就要把之前插入的删掉，再重新插入，才会有移动的视觉效果，也不会出现错误
-    transformerList.value.splice(res.index, 1)
-    transformerList.value.splice(atIndex, 0, card)
+    transformerList.splice(res.index, 1)
+    transformerList.splice(atIndex, 0, card)
     calculateStore.callMethod("deleteItem-provider",id)
     calculateStore.callMethod("deleteItem-reciver",id)
   }

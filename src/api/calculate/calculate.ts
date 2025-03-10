@@ -6,6 +6,7 @@ enum Api {
     GetResult = '/flow/calculate/getResult',
     Reload  = '/flow/calculate/reload',
     GetAllRulesWithProperty = '/flow/generate/class/getAllRulesWithProperty',
+    SaveModel  = '/flow/calculate/saveModel',
 }
 
 
@@ -20,6 +21,9 @@ export const getResult = (params) =>
 
 export const reloadAll = () =>
   defHttp.post({url: Api.Reload});
+
+export const saveModel = (params) =>
+  defHttp.post({url: Api.SaveModel,params});
 
 export const getAllRulesWithProperty = () =>
   defHttp.get({url: Api.GetAllRulesWithProperty});

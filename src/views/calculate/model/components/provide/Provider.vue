@@ -22,7 +22,7 @@ import { useCalculateStore } from "@/store/modules/calculate"
 import ProvideDrag from "./ProvideDrag.vue"
 
 const calculateStore = useCalculateStore()
-const providerList = ref([])
+const providerList = calculateStore.providerList
 
 const [collectedProps, drop] = useDrop(() => ({
 	accept: ItemTypes.BOX,
@@ -40,7 +40,7 @@ function getHoverIndex(index){
 
 function dropFunc(obj,monitor){
   insertCard(obj,obj.id,nowHoverIndex.value)
-  nowHoverIndex.value = providerList.value.length
+  nowHoverIndex.value = providerList.length
   calculateStore.callMethod("deleteItem-transformer",obj.id)
   calculateStore.callMethod("deleteItem-reciver",obj.id)
 }
@@ -50,21 +50,21 @@ function deleteItem(id: string){
   if(index<0){
     return
   }
-  providerList.value.splice(index, 1)
+  providerList.splice(index, 1)
 }
 
 function findCard(id: string){
-  const card = providerList.value.filter(c => `${c.id}` === id)[0]
+  const card = providerList.filter(c => `${c.id}` === id)[0]
   return {
     card,
-    index: providerList.value.indexOf(card),
+    index: providerList.indexOf(card),
   }
 }
 
 function moveCard(id: string, atIndex: number){
   const { card, index } = findCard(id)
-  providerList.value.splice(index, 1)
-  providerList.value.splice(atIndex, 0, card)
+  providerList.splice(index, 1)
+  providerList.splice(atIndex, 0, card)
   calculateStore.callMethod("deleteItem-transformer",id)
   calculateStore.callMethod("deleteItem-reciver",id)
 }
@@ -73,12 +73,12 @@ function insertCard(card,id,atIndex){
   const res = findCard(id)
   if(res.index=== -1){
     // 如果没有这个卡片说明是第一移入，直接插到当前位置
-    providerList.value.splice(atIndex, 0, card)
+    providerList.splice(atIndex, 0, card)
     // 为rules新增一个对象
   }else{
     // 如果不是第一次插入，就要把之前插入的删掉，再重新插入，才会有移动的视觉效果，也不会出现错误
-    providerList.value.splice(res.index, 1)
-    providerList.value.splice(atIndex, 0, card)
+    providerList.splice(res.index, 1)
+    providerList.splice(atIndex, 0, card)
     calculateStore.callMethod("deleteItem-transformer",id)
     calculateStore.callMethod("deleteItem-reciver",id)
   }
@@ -93,6 +93,7 @@ onMounted(() => {
 .provider-container{
   color: #8c8c8c;
   display: flex;
+  flex-grow: 1;
   flex-wrap: wrap;
   background: #ffffff;
   border: 1px solid #f0f0f0;

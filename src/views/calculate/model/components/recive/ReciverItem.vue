@@ -4,6 +4,7 @@
       <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
       <div :class="rotateFlag ? 'rotate-line':''">
         <div class="dropped-item" v-if="droppedObj.objectId!==undefined" @click="findSource" v-click-outside="onClickOutside">
+          <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click.stop="deleteItem"/>
           <div class="mb-1">{{ droppedObj.info.propertyName }}</div>
           <div :style="{fontSize:'12px'}">{{ droppedObj.info.formItemName }}</div>
         </div>
@@ -15,6 +16,9 @@ import { useDrop } from 'vue3-dnd'
 import { useCalculateStore } from "@/store/modules/calculate"
 import { ref,computed } from "vue"
 import vClickOutside from '@/directives/clickOutside';
+import {
+  DeleteTwoTone
+} from '@ant-design/icons-vue';
 
 const droppedObj = ref({})
 
@@ -22,6 +26,9 @@ const props = defineProps({
   item: Object,
   id:String
 })
+
+const emits = defineEmits(['removeRelation','addRelation'])
+
 const calculateStore = useCalculateStore()
 
 const isAnime = computed(()=>{
@@ -46,9 +53,24 @@ const [collectedProps, drop] = useDrop(() => ({
 }))
 
 function dropFunc(obj){
+  if(droppedObj.value.objectId!==undefined){
+    // 替换时清除之前的记录
+    deleteItem()
+  }
   console.log("dropped:", obj)
   droppedObj.value = obj
+  // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，放置源的id、属性名
+  calculateStore.setRelations(obj.objectId,obj.info.propertyName,props.id,props.item.propertyName)
+  emits('addRelation',obj.objectId,obj.info.propertyName,props.item.propertyName)
 }
+
+function deleteItem(){
+  // 删去拖拽源与放置目标的记录
+  calculateStore.removeRelations(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.id,props.item.propertyName)
+  emits('removeRelation',droppedObj.value.objectId,droppedObj.value.info.propertyName,props.item.propertyName)
+  droppedObj.value = {}
+}
+
 
 const rotateFlag = computed(()=>{
   if(calculateStore.sourceObj=== undefined||droppedObj.value.objectId === undefined){
@@ -66,6 +88,7 @@ function onClickOutside(){
 }
 
 
+
 </script>
 <style scoped lang="less">
 
@@ -78,6 +101,7 @@ function onClickOutside(){
   background-color: #1890ff;
   border-radius: 4px;
   .dropped-item{
+    position: relative;
     margin-top: 4px;
     width: 100%;
     color: #fff;
@@ -85,6 +109,22 @@ function onClickOutside(){
     border-radius: 4px;
     font-size: 12px;
     background-color: #87d068;
+
+    .remove-icon{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 18px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    }
+    &:hover .remove-icon {
+    opacity: 1;
+    visibility: visible;
+    }
+
   }
 
   // 转动的边框线(两条)
