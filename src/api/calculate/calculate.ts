@@ -7,6 +7,8 @@ enum Api {
     Reload  = '/flow/calculate/reload',
     GetAllRulesWithProperty = '/flow/generate/class/getAllRulesWithProperty',
     SaveModel  = '/flow/calculate/saveModel',
+    GetModels = '/flow/calculate/getModels',
+    GetModelById = '/flow/calculate/getModelById'
 }
 
 
@@ -28,3 +30,20 @@ export const saveModel = (params) =>
 export const getAllRulesWithProperty = () =>
   defHttp.get({url: Api.GetAllRulesWithProperty});
 
+  export const getModelsPage = (params) => {
+    const query = {
+      pageSize: params.pageSize,
+      pageNum: params.pageNum
+    }
+    delete params.pageSize
+    delete params.pageNum
+    const param ={
+      query,
+      entity: params
+    } 
+    const result = defHttp.post({url: Api.GetModels, params: param});
+    return result;
+  };
+
+export const getModelById = (id) =>
+  defHttp.get({url: Api.GetModelById  + '/' + id});

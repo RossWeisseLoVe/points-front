@@ -1,6 +1,6 @@
 
 import { defineStore } from 'pinia';
-import { saveModel } from "@/api/calculate/calculate"
+import { saveModel,getModelById } from "@/api/calculate/calculate"
 
 
 export const useCalculateStore = defineStore('calculate',{
@@ -17,6 +17,11 @@ export const useCalculateStore = defineStore('calculate',{
 
   },
   actions: {
+    async initState(id){
+      if(id!==undefined){
+        const res = await getModelById(id)
+      }
+    },
     registerMethod(methodName, method) {
       this.methods[methodName] = method;
     },
@@ -30,7 +35,6 @@ export const useCalculateStore = defineStore('calculate',{
     },
     setRelations(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName){
       //给拖拽源设置目标关系，给放置目标设置来源关系通过父子组件传值来做，提高效率
-      console.log("relations:",sourceObjId,sourcePropertyName,targetObjId,targetPropertyName)
       const source = this.getSourceObj(sourceObjId)
       if(source.relationOut===undefined){
         source.relationOut = {}
@@ -50,7 +54,6 @@ export const useCalculateStore = defineStore('calculate',{
           const newList = list.filter(item=>{
             return !(item.targetObjId === targetObjId && item.targetPropertyName === targetPropertyName)
           })
-          console.log("filter",newList)
           if(newList.length===0){
             delete source.relationOut[sourcePropertyName]
           }else{
@@ -61,7 +64,6 @@ export const useCalculateStore = defineStore('calculate',{
     },
     getSourceObj(id){
       for (const item of this.providerList) {
-        console.log("provide:",item)
         if(item.id === id){
           return item
         }
@@ -75,38 +77,46 @@ export const useCalculateStore = defineStore('calculate',{
     async saveCalculateModel(){
       const regionList:Array<any> = []
       for (const item of this.providerList) {
-        console.log("fuck",item)
         regionList.push({
           id:item.id,
-          info: item.info,
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
+          info: {
+            className: item.info.className,
+            description: item.info.description,
+            properties: item.info.properties
+          },
+          relationOut:JSON.stringify(item.relationOut),
+          relationIn: JSON.stringify(item.relationIn),
           type:'provider'
         })
       }
       for (const item of this.transformerList) {
-        console.log("fuck",item)
         regionList.push({
           id:item.id,
-          info: item.info,
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
+          info: {
+            className: item.info.className,
+            description: item.info.description,
+            properties: item.info.properties
+          },
+          relationOut:JSON.stringify(item.relationOut),
+          relationIn: JSON.stringify(item.relationIn),
           type:'transformer'
         })
       }
       for (const item of this.providerList) {
-        console.log("fuck",item)
         regionList.push({
           id:item.id,
-          info: item.info,
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
+          info: {
+            className: item.info.className,
+            description: item.info.description,
+            properties: item.info.properties
+          },
+          relationOut:JSON.stringify(item.relationOut),
+          relationIn: JSON.stringify(item.relationIn),
           type:'reciver'
         })
       }
-      const template = JSON.stringify(regionList)
       await saveModel({
-        template
+        template:regionList
       })
     }
   },

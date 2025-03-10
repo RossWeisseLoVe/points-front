@@ -27,9 +27,6 @@ const providerList = calculateStore.providerList
 const [collectedProps, drop] = useDrop(() => ({
 	accept: ItemTypes.BOX,
   drop: dropFunc,
-  hover(item,monitor){
-    console.log("monitor.isOver()",monitor.isOver())
-  }
 }))
 
 const nowHoverIndex = ref(0)

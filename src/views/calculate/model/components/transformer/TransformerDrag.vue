@@ -65,10 +65,7 @@ const [, drop] = useDrop(() => ({
       return
     }
     if(monitor.getItemType()===ItemTypes.SORTBOX){
-      console.log("draggedId",draggedId)
-      console.log("Id",props.id)
       if (draggedId !== props.id) {
-        console.log('sfasdfas')
         const { index: overIndex } = props.findCard(props.id)
         props.moveCard(draggedId, overIndex)
       }
@@ -77,7 +74,6 @@ const [, drop] = useDrop(() => ({
       const { index: overIndex } = props.findCard(props.id)
       props.insertCard(item,draggedId,overIndex)
       emits('hoverIndex',overIndex)
-      console.log('12312312')
     }
   },
 }))

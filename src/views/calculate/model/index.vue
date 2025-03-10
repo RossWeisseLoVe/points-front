@@ -39,14 +39,17 @@ import { onMounted, ref } from 'vue';
 import Rule from './components/Rule.vue';
 import Provider from "./components/provide/Provider.vue"
 import Transformer from "./components/transformer/Transformer.vue"
+import { useRoute } from 'vue-router' 
 import Reciver from "./components/recive/Reciver.vue"
 import PredefinedCalculators from "./components/PredefinedCalculators.vue"
 import { predefinedCalList } from "../calculate.data"
 import { useCalculateStore } from "@/store/modules/calculate"
 
 const calculateStore = useCalculateStore()
+const route = useRoute()
 const ruleList = ref([])
 onMounted(async ()=>{
+   await calculateStore.initState(route.query.mid)
    const res = await getAllRulesWithProperty()
    ruleList.value = res
 })

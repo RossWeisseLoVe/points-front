@@ -57,7 +57,6 @@ function dropFunc(obj){
     // 替换时清除之前的记录
     deleteItem()
   }
-  console.log("dropped:", obj)
   droppedObj.value = obj
   // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，放置源的id、属性名
   calculateStore.setRelations(obj.objectId,obj.info.propertyName,props.id,props.item.propertyName)

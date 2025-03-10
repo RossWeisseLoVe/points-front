@@ -92,12 +92,7 @@ const go = useGo()
   });
 
   onMounted(async ()=>{
-    const res = await dictionaryItemPageList({
-     pageNum: 1,
-     pageSize: 100000,
-      mainId: "01b78d610662800b6af6f8b8d04d73ee"
-    })
-    typeList.value = res.rows
+
   })
 
   async function handleTest(record) {

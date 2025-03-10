@@ -31,7 +31,6 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
   end: (item, monitor) => {
     const { id: droppedId, originalIndex } = item
     const didDrop = monitor.didDrop()
-    console.log('didDrop', didDrop)
     if (!didDrop) {
 
       }

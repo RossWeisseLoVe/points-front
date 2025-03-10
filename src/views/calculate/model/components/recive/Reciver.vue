@@ -39,7 +39,6 @@ function getHoverIndex(index){
 
 function dropFunc(obj){
   insertCard(obj,obj.id,nowHoverIndex.value)
-  console.log(obj)
   nowHoverIndex.value = reciverList.length
   calculateStore.callMethod("deleteItem-provider",obj.id)
   calculateStore.callMethod("deleteItem-transformer",obj.id)
