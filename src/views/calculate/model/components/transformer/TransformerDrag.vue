@@ -10,7 +10,7 @@
       <div class="item-container">
         <div v-for="item in provider.info.properties" :key="item.id">
           <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-          <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation"/>
+          <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
         </div>
       </div>
     </div>
@@ -91,15 +91,15 @@ const result = str.slice(0, 2).replace(/^(.)(.)?/, (_, c1, c2) =>
 return result
 }
 
-function addRelation(sourceObjId,sourcePropertyName,targetPropertyName){
-  if(props.provider.relationIn===undefined){
+function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
     props.provider.relationIn = {}
   }
   if(props.provider.relationIn[targetPropertyName]===undefined){
     props.provider.relationIn[targetPropertyName] = []
   }
   props.provider.relationIn[targetPropertyName].push({
-    sourceObjId,sourcePropertyName
+    sourceObjId,sourcePropertyName,sourceLabel
   })
 }
 

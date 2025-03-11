@@ -5,7 +5,7 @@
       <BasicTable @register="registerTable" class="">
         <template #toolbar>
           <Authority :value="'Calculate:'+PerEnum.PUBLISH" >
-            <a-button type="primary" @click="addNewModel"> 新建模型</a-button>
+            <a-button type="primary" @click="addNewSpace"> 新建计算空间</a-button>
           </Authority>
         </template>
         <template #bodyCell="{ column, record }">
@@ -19,15 +19,9 @@
                   auth: 'Calculate:'+PerEnum.QUERY,
                 },
                 {
-                  tooltip: '生成计算空间',
+                  tooltip: '生成实例',
                   icon: 'ant-design:rocket-outlined',
                   onClick: handleCreateInstance.bind(null, record),
-                  auth: 'Calculate:'+PerEnum.ADD,
-                },
-                {
-                  tooltip: '计算空间管理',
-                  icon: 'ant-design:read-outlined',
-                  onClick: handleGoToSpace.bind(null, record),
                   auth: 'Calculate:'+PerEnum.ADD,
                 },
               ]"
@@ -41,7 +35,7 @@
   <script lang="ts" setup>
     import {  onMounted, ref } from 'vue';
     import { BasicTable, useTable, TableAction } from '@/components/Table';
-    import { getModelsPage,newInstance } from "@/api/calculate/calculate"
+    import { getInstancePageByModelId } from "@/api/calculate/calculate"
     import { PageWrapper } from '@/components/Page';
     // import TypeList from '@/views/components/leftTree/TypeList.vue';
     import { useModal } from '@/components/Modal';
@@ -58,7 +52,7 @@
     const typeList = ref([])
     const [registerTable, { reload }] = useTable({
       title: '列表',
-      api: getModelsPage,
+      api: getInstancePageByModelId,
       immediate: true,
       columns:modelColumns,
       formConfig: {
@@ -67,6 +61,11 @@
         showAdvancedButton: false,
         showResetButton: false,
         autoSubmitOnEnter: true,
+      },
+      beforeFetch:(params)=>{
+        let searchInfo = {};
+        console.log('params',params)
+        return {...params, ...searchInfo}
       },
       canColDrag: true,
       useSearchForm: true,
@@ -80,23 +79,18 @@
       },
     });
 
-    function handleEdit(record){
-        go('/calculatemodel/index?mid='+record.id)
-    }
+    // function handleEdit(record){
+    //   go('/calculatemodel/index?mid='+record.id)
+    // }
   
-    function addNewModel(){
+    function addNewSpace(){
       go('/calculatemodel/index')
     }
 
-
-    function handleCreateInstance(record){
-      newInstance({
-        modelId: record.id
-      })
-    }
+    // function handleCreateInstance(record){
+    //   newInstance({
+    //     modelId: record.id
+    //   })
+    // }
   
-    function handleGoToSpace(record){
-      go('/calculatespace?mid='+record.id)
-    }
-
   </script>

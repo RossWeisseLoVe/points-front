@@ -11,15 +11,44 @@ export const useCalculateStore = defineStore('calculate',{
     sourceObj: undefined,
     reciverList: [],
     transformerList: [],
-    providerList: []
+    providerList: [],
+    modelId: undefined,
+    description: undefined,
+    modelName: undefined,
   }),
   getters: {
 
   },
   actions: {
+    resetState(){
+      this.method = {}
+      this.activeType = undefined
+      this.activeId = undefined
+      this.sourceObj = undefined
+      this.reciverList = []
+      this.transformerList = []
+      this.providerList = []
+      this.modelId = undefined
+      this.description = undefined
+      this.modelName = undefined
+    },
     async initState(id){
       if(id!==undefined){
         const res = await getModelById(id)
+        this.modelId = res.id
+        this.description = res.description
+        this.modelName = res.name
+        for (const item of res.template) {
+          item.relationIn = JSON.parse(item.relationIn)
+          item.relationOut = JSON.parse(item.relationOut)
+          if(item.type === "provider"){
+            this.providerList.push(item)
+          }else if(item.type === "transformer"){
+            this.transformerList.push(item)
+          }else if(item.type === "reciver"){
+            this.reciverList.push(item)
+          }
+        }
       }
     },
     registerMethod(methodName, method) {
@@ -33,17 +62,17 @@ export const useCalculateStore = defineStore('calculate',{
         console.warn(`Method ${methodName} not found in sharedMethods`);
       }
     },
-    setRelations(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName){
+    setRelations(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel){
       //给拖拽源设置目标关系，给放置目标设置来源关系通过父子组件传值来做，提高效率
       const source = this.getSourceObj(sourceObjId)
-      if(source.relationOut===undefined){
+      if(source.relationOut===undefined||source.relationOut===null){
         source.relationOut = {}
       }
       if(source.relationOut[sourcePropertyName]===undefined){
         source.relationOut[sourcePropertyName] = []
       }
       source.relationOut[sourcePropertyName].push({
-        targetObjId,targetPropertyName
+        targetObjId,targetPropertyName,targetLabel
       })
     },
     removeRelations(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName){
@@ -102,7 +131,7 @@ export const useCalculateStore = defineStore('calculate',{
           type:'transformer'
         })
       }
-      for (const item of this.providerList) {
+      for (const item of this.reciverList) {
         regionList.push({
           id:item.id,
           info: {
@@ -115,9 +144,16 @@ export const useCalculateStore = defineStore('calculate',{
           type:'reciver'
         })
       }
-      await saveModel({
-        template:regionList
+      const res = await saveModel({
+        template:regionList,
+        id: this.modelId,
+        name: this.modelName,
+        description: this.description
       })
+      this.modelId = res.id
+      this.modelName = res.name
+      this.description = res.description
+      console.log("modelMessage",res)
     }
   },
 });

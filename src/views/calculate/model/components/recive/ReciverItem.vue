@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { useDrop } from 'vue3-dnd'
 import { useCalculateStore } from "@/store/modules/calculate"
-import { ref,computed } from "vue"
+import { ref,computed,onMounted } from "vue"
 import vClickOutside from '@/directives/clickOutside';
 import {
   DeleteTwoTone
@@ -24,7 +24,24 @@ const droppedObj = ref({})
 
 const props = defineProps({
   item: Object,
-  id:String
+  id:String,
+  relation: Object
+})
+
+onMounted(()=>{
+  if(props.relation===undefined||props.relation===null){
+    return
+  }
+  const dataList = props.relation[props.item.propertyName]
+  if(dataList===undefined||dataList===null){
+    return
+  }
+  const info = {
+    propertyName: dataList[0].sourcePropertyName,
+    formItemName: dataList[0].sourceLabel
+  }
+  droppedObj.value.objectId = dataList[0].sourceObjId
+  droppedObj.value.info = info
 })
 
 const emits = defineEmits(['removeRelation','addRelation'])
@@ -58,9 +75,9 @@ function dropFunc(obj){
     deleteItem()
   }
   droppedObj.value = obj
-  // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，放置源的id、属性名
-  calculateStore.setRelations(obj.objectId,obj.info.propertyName,props.id,props.item.propertyName)
-  emits('addRelation',obj.objectId,obj.info.propertyName,props.item.propertyName)
+  // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
+  calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName)
+  emits('addRelation',obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName)
 }
 
 function deleteItem(){

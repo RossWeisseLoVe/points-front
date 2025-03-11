@@ -8,7 +8,9 @@ enum Api {
     GetAllRulesWithProperty = '/flow/generate/class/getAllRulesWithProperty',
     SaveModel  = '/flow/calculate/saveModel',
     GetModels = '/flow/calculate/getModels',
-    GetModelById = '/flow/calculate/getModelById'
+    GetModelById = '/flow/calculate/getModelById',
+    NewInstance = '/flow/calculate/newInstance',
+    GetInstancePageByModelId = '/flow/calculate/getInstancePageByModelId'
 }
 
 
@@ -30,20 +32,38 @@ export const saveModel = (params) =>
 export const getAllRulesWithProperty = () =>
   defHttp.get({url: Api.GetAllRulesWithProperty});
 
-  export const getModelsPage = (params) => {
-    const query = {
-      pageSize: params.pageSize,
-      pageNum: params.pageNum
-    }
-    delete params.pageSize
-    delete params.pageNum
-    const param ={
-      query,
-      entity: params
-    } 
-    const result = defHttp.post({url: Api.GetModels, params: param});
-    return result;
-  };
+export const getModelsPage = (params) => {
+  const query = {
+    pageSize: params.pageSize,
+    pageNum: params.pageNum
+  }
+  delete params.pageSize
+  delete params.pageNum
+  const param ={
+    query,
+    entity: params
+  } 
+  const result = defHttp.post({url: Api.GetModels, params: param});
+  return result;
+};
 
 export const getModelById = (id) =>
   defHttp.get({url: Api.GetModelById  + '/' + id});
+
+export const newInstance = (params) =>
+  defHttp.post({url: Api.NewInstance,params});
+
+export const getInstancePageByModelId = (params) => {
+  const query = {
+    pageSize: params.pageSize,
+    pageNum: params.pageNum
+  }
+  delete params.pageSize
+  delete params.pageNum
+  const param ={
+    query,
+    entity: params
+  } 
+  const result = defHttp.post({url: Api.GetInstancePageByModelId, params: param});
+  return result;
+};

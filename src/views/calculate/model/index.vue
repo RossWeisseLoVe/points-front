@@ -20,8 +20,10 @@
             <div class="h-1/2 upper">
                 <Provider class="h-full"/>
                 <div class="toolBar">
-                    <Button type="primary" @click="save" class="tool-button">保存</Button>
+                    <Button type="primary" @click="openInfoModal('save')" class="tool-button">保存</Button>
                     <Button type="primary"  class="tool-button">检查</Button>
+                    <Button type="primary"  class="tool-button" @click="openInfoModal('info')">信息</Button>
+                    <Button type="primary"  class="tool-button">流程</Button>
                 </div>
             </div>
             <div class="w-2/2 h-1/2 bottom">
@@ -29,6 +31,7 @@
               <Reciver class="w-1/4 h-2/2" />
             </div>
         </div>
+        <InfoModal @register="registerModal" />
     </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -44,7 +47,11 @@ import Reciver from "./components/recive/Reciver.vue"
 import PredefinedCalculators from "./components/PredefinedCalculators.vue"
 import { predefinedCalList } from "../calculate.data"
 import { useCalculateStore } from "@/store/modules/calculate"
+import { onBeforeMount } from 'vue';
+import InfoModal from "./components/InfoModal.vue"
+import { useModal } from '@/components/Modal';
 
+const [registerModal, { openModal, setModalProps }] = useModal();
 const calculateStore = useCalculateStore()
 const route = useRoute()
 const ruleList = ref([])
@@ -54,17 +61,31 @@ onMounted(async ()=>{
    ruleList.value = res
 })
 
+onBeforeMount(()=>{
+    calculateStore.resetState()  //清除state
+})
+
 function getClassName(item){
   const list = item.className.split(".")
   return list[list.length - 1]
 }
 
-async function save(){
-  console.log("providerList:",calculateStore.providerList)
-  console.log("transformList:",calculateStore.transformerList)
-  console.log("receiveList:",calculateStore.reciverList)
-  //先将模型内的对象全部序列化
-  await calculateStore.saveCalculateModel()
+
+function openInfoModal(type){
+    if(type==="info"){
+        setModalProps({
+            title: "模型信息",
+            okText: "保存"
+        });
+    }else if(type==="save"){
+        setModalProps({
+            title: "模型信息",
+            okText: "提交"
+        }); 
+    }
+    openModal(true, {
+        type
+    });
 }
 
 </script>

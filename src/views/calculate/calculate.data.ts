@@ -207,7 +207,7 @@ export const predefinedCalList = [
 export const modelColumns: BasicColumn[] = [
   {
     title: '名称',
-    dataIndex: 'className',
+    dataIndex: 'name',
     width: 200,
     align: 'left',
   },

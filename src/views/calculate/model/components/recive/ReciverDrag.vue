@@ -9,7 +9,7 @@
       </div>
       <div class="item-container">
         <div v-for="item in provider.info.properties" :key="item.id">
-          <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation"/>
+          <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
         </div>
       </div>
     </div>
@@ -94,15 +94,15 @@ return result
 const { isDragging } = toRefs(collect)
 const opacity = computed(() => (unref(isDragging) ? 0 : 1))
 
-function addRelation(sourceObjId,sourcePropertyName,targetPropertyName){
-  if(props.provider.relationIn===undefined){
+function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
     props.provider.relationIn = {}
   }
   if(props.provider.relationIn[targetPropertyName]===undefined){
     props.provider.relationIn[targetPropertyName] = []
   }
   props.provider.relationIn[targetPropertyName].push({
-    sourceObjId,sourcePropertyName
+    sourceObjId,sourcePropertyName,sourceLabel
   })
 }
 
