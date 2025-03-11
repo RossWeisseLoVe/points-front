@@ -13,17 +13,11 @@
             <TableAction
               :actions="[
                 {
-                  tooltip: '编辑模型',
-                  icon: 'clarity:note-edit-line',
-                  onClick: handleEdit.bind(null, record),
-                  auth: 'Calculate:'+PerEnum.QUERY,
-                },
-                {
-                  tooltip: '生成实例',
+                  tooltip: '查看计算域',
                   icon: 'ant-design:rocket-outlined',
-                  onClick: handleCreateInstance.bind(null, record),
+                  onClick: getRegionInstanceById.bind(null,record),
                   auth: 'Calculate:'+PerEnum.ADD,
-                },
+                }
               ]"
             />
           </template>
@@ -32,65 +26,71 @@
       <contextHolder />
     </PageWrapper>
   </template>
-  <script lang="ts" setup>
-    import {  onMounted, ref } from 'vue';
-    import { BasicTable, useTable, TableAction } from '@/components/Table';
-    import { getInstancePageByModelId } from "@/api/calculate/calculate"
-    import { PageWrapper } from '@/components/Page';
-    // import TypeList from '@/views/components/leftTree/TypeList.vue';
-    import { useModal } from '@/components/Modal';
-    import { dictionaryItemPageList } from '@/api/base/dictionary';
-    import { modelColumns, searchFormSchema } from '../calculate.data';
-    import { useMessage } from '@/hooks/web/useMessage';
-    import { PerEnum } from '@/enums/perEnum';
-    import { useGo } from '@/hooks/web/usePage';
+<script lang="ts" setup>
+  import {  onMounted, ref } from 'vue';
+  import { BasicTable, useTable, TableAction } from '@/components/Table';
+  import { getInstancePageByModelId,getRegionInstanceModelListById } from "@/api/calculate/calculate"
+  import { PageWrapper } from '@/components/Page';
+  // import TypeList from '@/views/components/leftTree/TypeList.vue';
+  import { useModal } from '@/components/Modal';
+  import { dictionaryItemPageList } from '@/api/base/dictionary';
+  import { instanceColumns, searchFormSchema } from '../calculate.data';
+  import { useMessage } from '@/hooks/web/useMessage';
+  import { PerEnum } from '@/enums/perEnum';
+  import { useGo } from '@/hooks/web/usePage';
+  import { useRoute } from 'vue-router' 
   
-    const go = useGo()
-    const { createMessage } = useMessage();
-    const [registerModal, { openModal, setModalProps }] = useModal();
-    const currentTreeNode = ref<String>("");
-    const typeList = ref([])
-    const [registerTable, { reload }] = useTable({
-      title: '列表',
-      api: getInstancePageByModelId,
-      immediate: true,
-      columns:modelColumns,
-      formConfig: {
-        labelWidth: 120,
-        schemas: searchFormSchema,
-        showAdvancedButton: false,
-        showResetButton: false,
-        autoSubmitOnEnter: true,
-      },
-      beforeFetch:(params)=>{
-        let searchInfo = {};
-        console.log('params',params)
-        return {...params, ...searchInfo}
-      },
-      canColDrag: true,
-      useSearchForm: true,
-      bordered: true,
-      showIndexColumn: false,
-      actionColumn: {
-        width: 180,
-        title: '操作',
-        dataIndex: 'action',
-        fixed: 'right',
-      },
-    });
+  const route = useRoute()
+  const go = useGo()
+  const { createMessage } = useMessage();
+  const [registerModal, { openModal, setModalProps }] = useModal();
+  const currentTreeNode = ref<String>("");
+  const typeList = ref([])
+  const [registerTable, { reload }] = useTable({
+    title: '列表',
+    api: getInstancePageByModelId,
+    immediate: true,
+    columns:instanceColumns,
+    formConfig: {
+      labelWidth: 120,
+      schemas: searchFormSchema,
+      showAdvancedButton: false,
+      showResetButton: false,
+      autoSubmitOnEnter: true,
+    },
+    beforeFetch:(params)=>{
+      return {
+        ...params,
+        modelId: route.query.modelId
+      }
+    },
+    canColDrag: true,
+    useSearchForm: true,
+    bordered: true,
+    showIndexColumn: false,
+    actionColumn: {
+      width: 180,
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+    },
+  });  
+  
+  function handleEdit(record){
+    go('/calculatemodel/index?mid='+record.id)
+  }
 
-    // function handleEdit(record){
-    //   go('/calculatemodel/index?mid='+record.id)
-    // }
+  function addNewSpace(){
+    go('/calculatemodel/index')
+  }  
   
-    function addNewSpace(){
-      go('/calculatemodel/index')
-    }
+  // function handleCreateInstance(record){
+  //   newInstance({
+  //     modelId: record.id
+  //   })
+  // }
 
-    // function handleCreateInstance(record){
-    //   newInstance({
-    //     modelId: record.id
-    //   })
-    // }
-  
-  </script>
+  async function getRegionInstanceById(record){
+    await getRegionInstanceModelListById(record.id)
+  }
+</script>

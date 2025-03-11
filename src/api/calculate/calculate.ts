@@ -10,7 +10,8 @@ enum Api {
     GetModels = '/flow/calculate/getModels',
     GetModelById = '/flow/calculate/getModelById',
     NewInstance = '/flow/calculate/newInstance',
-    GetInstancePageByModelId = '/flow/calculate/getInstancePageByModelId'
+    GetInstancePageByModelId = '/flow/calculate/getInstancePageByModelId',
+    GetRegionInstanceModelListById = '/flow/calculate/getRegionInstanceModelListById'
 }
 
 
@@ -66,4 +67,7 @@ export const getInstancePageByModelId = (params) => {
   } 
   const result = defHttp.post({url: Api.GetInstancePageByModelId, params: param});
   return result;
-};
+}
+
+export const getRegionInstanceModelListById = (id) =>
+  defHttp.get({url: Api.GetRegionInstanceModelListById  + '/' + id});
