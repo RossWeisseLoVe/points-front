@@ -11,9 +11,12 @@ enum Api {
     GetModelById = '/flow/calculate/getModelById',
     NewInstance = '/flow/calculate/newInstance',
     GetInstancePageByModelId = '/flow/calculate/getInstancePageByModelId',
-    GetRegionInstanceModelListById = '/flow/calculate/getRegionInstanceModelListById'
+    GetRegionInstanceModelListById = '/flow/calculate/getRegionInstanceModelListById',
+    ExecuteRegion = '/flow/calculate/executeRegion'
 }
 
+export const executeRegion = (params) =>
+  defHttp.post({url: Api.ExecuteRegion,params});
 
 export const getAllRules = () =>
   defHttp.get({url: Api.GetAllRules});

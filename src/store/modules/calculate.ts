@@ -39,8 +39,6 @@ export const useCalculateStore = defineStore('calculate',{
         this.description = res.description
         this.modelName = res.name
         for (const item of res.template) {
-          item.relationIn = JSON.parse(item.relationIn)
-          item.relationOut = JSON.parse(item.relationOut)
           if(item.type === "provider"){
             this.providerList.push(item)
           }else if(item.type === "transformer"){
@@ -113,8 +111,8 @@ export const useCalculateStore = defineStore('calculate',{
             description: item.info.description,
             properties: item.info.properties
           },
-          relationOut:JSON.stringify(item.relationOut),
-          relationIn: JSON.stringify(item.relationIn),
+          relationOut:item.relationOut,
+          relationIn: item.relationIn,
           type:'provider'
         })
       }
@@ -126,8 +124,8 @@ export const useCalculateStore = defineStore('calculate',{
             description: item.info.description,
             properties: item.info.properties
           },
-          relationOut:JSON.stringify(item.relationOut),
-          relationIn: JSON.stringify(item.relationIn),
+          relationOut:item.relationOut,
+          relationIn: item.relationIn,
           type:'transformer'
         })
       }
@@ -139,8 +137,8 @@ export const useCalculateStore = defineStore('calculate',{
             description: item.info.description,
             properties: item.info.properties
           },
-          relationOut:JSON.stringify(item.relationOut),
-          relationIn: JSON.stringify(item.relationIn),
+          relationOut:item.relationOut,
+          relationIn: item.relationIn,
           type:'reciver'
         })
       }

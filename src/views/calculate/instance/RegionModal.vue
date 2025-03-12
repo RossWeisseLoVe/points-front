@@ -23,11 +23,13 @@
 <script lang="ts" setup>
   import { ref, computed, unref,reactive } from 'vue';
   import { Form,FormItem,Input,InputNumber,Radio ,Select } from "ant-design-vue"
-  import { getResult } from '@/api/calculate/calculate'
+  import { getResult,executeRegion } from '@/api/calculate/calculate'
   import { BasicModal, useModalInner } from '@/components/Modal';
       const RadioGroup = Radio.Group
       const fields = ref({})
       const typeName = ref("")
+      const regionId = ref(undefined)
+      const modelId = ref(undefined)
       const formData = ref({})
       const componentMap = {
         'Input': Input,
@@ -38,6 +40,9 @@
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
         setModalProps({ confirmLoading: false });
         typeName.value = data.typeName
+        regionId.value = data.regionId
+        modelId.value = data.modelId
+        console.log('ffffff',data)
         for (const field of data.data) {
           if (!(field.propertyName in formData.value)) {
             formData.value[field.propertyName] = getDefaultValue(field.propertyType);
@@ -121,12 +126,16 @@
       };
 
       async function handleSubmit() {
-        const res = await getResult({
-          param: formData.value,
-          typeName:typeName.value
+        // const res = await getResult({
+        //   param: formData.value,
+        //   typeName:typeName.value
+        // })
+        // formData.value = res
+        // console.log("ffffffffffff",res)
+        await executeRegion({
+          modelId: modelId.value,
+          regionId: regionId.value
         })
-        formData.value = res
-        console.log("ffffffffffff",res)
       }
 
 

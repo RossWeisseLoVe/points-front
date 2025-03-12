@@ -66,14 +66,14 @@
       console.log("fuckmodel",data.model)
       setTableData(data.model.template)
     });
-  
-  
     function handleUseRegion(record){
         console.log(record)
         const list = record.className.split(".")
         openModal(true,{
             data: record.properties,
-            typeName: list[list.length -1]
+            typeName: list[list.length -1],
+            regionId: record.id,
+            modelId: record.modelId
         })
     }
 
