@@ -5,7 +5,7 @@
       <BasicTable @register="registerTable" class="">
         <template #toolbar>
           <Authority :value="'Calculate:'+PerEnum.PUBLISH" >
-            <a-button type="primary" @click="addNewSpace"> 新建计算空间</a-button>
+            <Button type="primary" @click="addNewSpace"> 新建计算空间</Button>
           </Authority>
         </template>
         <template #bodyCell="{ column, record }">
@@ -23,15 +23,15 @@
           </template>
         </template>
       </BasicTable>
-      <contextHolder />
+      <InstanceDrawer @register="registerDrawer" />
     </PageWrapper>
   </template>
 <script lang="ts" setup>
   import {  onMounted, ref } from 'vue';
   import { BasicTable, useTable, TableAction } from '@/components/Table';
-  import { getInstancePageByModelId,getRegionInstanceModelListById } from "@/api/calculate/calculate"
   import { PageWrapper } from '@/components/Page';
   // import TypeList from '@/views/components/leftTree/TypeList.vue';
+  import { getInstancePageByModelId,getModelById } from "@/api/calculate/calculate"
   import { useModal } from '@/components/Modal';
   import { dictionaryItemPageList } from '@/api/base/dictionary';
   import { instanceColumns, searchFormSchema } from '../calculate.data';
@@ -39,13 +39,14 @@
   import { PerEnum } from '@/enums/perEnum';
   import { useGo } from '@/hooks/web/usePage';
   import { useRoute } from 'vue-router' 
-  
+  import InstanceDrawer from './InstanceDrawer.vue';
+  import { useDrawer } from '@/components/Drawer';
+  import { Button } from "ant-design-vue"
+
   const route = useRoute()
-  const go = useGo()
-  const { createMessage } = useMessage();
+  const modelData = ref({})
+  const [registerDrawer, { openDrawer,setDrawerProps }] = useDrawer();
   const [registerModal, { openModal, setModalProps }] = useModal();
-  const currentTreeNode = ref<String>("");
-  const typeList = ref([])
   const [registerTable, { reload }] = useTable({
     title: '列表',
     api: getInstancePageByModelId,
@@ -61,7 +62,7 @@
     beforeFetch:(params)=>{
       return {
         ...params,
-        modelId: route.query.modelId
+        modelId: route.query.mid
       }
     },
     canColDrag: true,
@@ -76,21 +77,36 @@
     },
   });  
   
-  function handleEdit(record){
-    go('/calculatemodel/index?mid='+record.id)
-  }
+  onMounted(async ()=>{
+    const res = await getModelById(route.query.mid)
+    for (const item of res.template) {
+      item.className = item.info.className
+      item.description = item.info.description
+      item.properties = item.info.properties
+      delete item.info
+    }
+    modelData.value = res
+  })
+
 
   function addNewSpace(){
-    go('/calculatemodel/index')
+    // go('/calculatemodel/index')
   }  
-  
-  // function handleCreateInstance(record){
-  //   newInstance({
-  //     modelId: record.id
-  //   })
-  // }
+
 
   async function getRegionInstanceById(record){
-    await getRegionInstanceModelListById(record.id)
+    setDrawerProps({
+        placement: "bottom",
+        height:"100%",
+        onClose:closeDrawer
+    })
+    openDrawer(true,{
+        id:record.id,
+        model: modelData.value
+    }as any)
+  }
+
+  function closeDrawer(){
+
   }
 </script>

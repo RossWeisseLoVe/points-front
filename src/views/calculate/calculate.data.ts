@@ -273,3 +273,24 @@ export const instanceColumns = [
     align: 'left',
   }
 ]
+
+export const instanceRegionColumns = [
+  {
+    title: '名称',
+    dataIndex: 'className',
+    width: 200,
+    align: 'left',
+  },
+  {
+    title: '类型',
+    dataIndex: 'type',
+    width: 100,
+    align: 'left',
+  },
+  {
+    title: '说明',
+    dataIndex: 'description',
+    width: 100,
+    align: 'left',
+  },
+]
