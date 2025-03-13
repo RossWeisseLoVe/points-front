@@ -60,20 +60,22 @@
         },
     });  
   
+    const instanceId = ref(undefined)
     const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
       setDrawerProps({ confirmLoading: false });
-      const res = await getRegionInstanceModelListById(data.id)
+      // 获取到实例数据，要和模板数据融合在一起
+      instanceId.value = data.instanceId
       console.log("fuckmodel",data.model)
       setTableData(data.model.template)
     });
+
     function handleUseRegion(record){
         console.log(record)
-        const list = record.className.split(".")
         openModal(true,{
             data: record.properties,
-            typeName: list[list.length -1],
+            typeName: record.className,
             regionId: record.id,
-            modelId: record.modelId
+            modelId: record.modelId,
         })
     }
 

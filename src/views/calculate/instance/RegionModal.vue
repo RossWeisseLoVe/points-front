@@ -23,13 +23,16 @@
 <script lang="ts" setup>
   import { ref, computed, unref,reactive } from 'vue';
   import { Form,FormItem,Input,InputNumber,Radio ,Select } from "ant-design-vue"
+  import { getRegionInstanceByRegionIdAndInstanceId } from "@/api/calculate/calculate"
   import { getResult,executeRegion } from '@/api/calculate/calculate'
   import { BasicModal, useModalInner } from '@/components/Modal';
       const RadioGroup = Radio.Group
       const fields = ref({})
       const typeName = ref("")
+      const instanceId = ref(undefined)
       const regionId = ref(undefined)
       const modelId = ref(undefined)
+      const regionInstanceId = ref(undefined)
       const formData = ref({})
       const componentMap = {
         'Input': Input,
@@ -38,11 +41,19 @@
         'Radio': RadioGroup ,
       };
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
+        const res = await getRegionInstanceByRegionIdAndInstanceId({
+          regionId: data.regionId,
+          instanceId: data.instanceId
+        })
+        formData.value = res.data
         setModalProps({ confirmLoading: false });
+        instanceId.value = data.instanceId
         typeName.value = data.typeName
         regionId.value = data.regionId
         modelId.value = data.modelId
-        console.log('ffffff',data)
+        regionInstanceId.value = res.id
+        //当前计算域实例信息与数据
+        console.log('ffffff',res)
         for (const field of data.data) {
           if (!(field.propertyName in formData.value)) {
             formData.value[field.propertyName] = getDefaultValue(field.propertyType);
@@ -132,10 +143,14 @@
         // })
         // formData.value = res
         // console.log("ffffffffffff",res)
-        await executeRegion({
+        const res = await executeRegion({
+          typeName: typeName.value,
           modelId: modelId.value,
-          regionId: regionId.value
+          regionId: regionId.value,
+          regionInstanceId: regionInstanceId.value,
+          param:formData.value
         })
+        formData.value = res
       }
 
 

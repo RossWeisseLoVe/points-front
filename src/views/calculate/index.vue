@@ -104,7 +104,8 @@ const go = useGo()
     const list = record.className.split(".")
     openModal(true, {
       data: res,
-      typeName: list[list.length -1]
+      typeName: list[list.length -1],
+      instanceId : record.instanceId 
     });
   }
 
