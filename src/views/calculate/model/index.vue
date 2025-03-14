@@ -1,14 +1,14 @@
 <template>
     <PageWrapper dense contentFullHeight fixedHeight contentClass="flex" class="designer-container">
         <div class="w-1/6 left-card">
-            <Collapse ghost>
-                <CollapsePanel>
+            <Collapse ghost v-model:activeKey="activeKey">
+                <CollapsePanel key="1">
                     <template #header>
                         <Tag color="#2db7f5">自定义计算规则</Tag>
                     </template>
                   <Rule  v-for="item in ruleList" :key="item.id" :item="item"/>
                 </CollapsePanel>
-                <CollapsePanel>
+                <CollapsePanel key="2">
                     <template #header>
                         <Tag color="#87d068">计算器</Tag>
                     </template>
@@ -54,6 +54,7 @@ import { useModal } from '@/components/Modal';
 const [registerModal, { openModal, setModalProps }] = useModal();
 const calculateStore = useCalculateStore()
 const route = useRoute()
+const activeKey = ref(["1","2"])
 const ruleList = ref([])
 onMounted(async ()=>{
    await calculateStore.initState(route.query.mid)

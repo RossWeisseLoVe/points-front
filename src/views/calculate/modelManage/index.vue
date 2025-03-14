@@ -19,12 +19,6 @@
                   auth: 'Calculate:'+PerEnum.QUERY,
                 },
                 {
-                  tooltip: '生成计算空间',
-                  icon: 'ant-design:rocket-outlined',
-                  onClick: handleCreateInstance.bind(null, record),
-                  auth: 'Calculate:'+PerEnum.ADD,
-                },
-                {
                   tooltip: '计算空间管理',
                   icon: 'ant-design:read-outlined',
                   onClick: handleGoToSpace.bind(null, record),
@@ -35,7 +29,6 @@
           </template>
         </template>
       </BasicTable>
-      <InstanceInfoModal @register="registerModal"  />
     </PageWrapper>
   </template>
   <script lang="ts" setup>
@@ -50,11 +43,10 @@
     import { useMessage } from '@/hooks/web/useMessage';
     import { PerEnum } from '@/enums/perEnum';
     import { useGo } from '@/hooks/web/usePage';
-    import InstanceInfoModal from './InstanceInfoModal.vue';
+    import InstanceInfoModal from '../instance/InstanceInfoModal.vue';
   
     const go = useGo()
     const { createMessage } = useMessage();
-    const [registerModal, { openModal, setModalProps }] = useModal();
     const currentTreeNode = ref<String>("");
     const typeList = ref([])
     const [registerTable, { reload }] = useTable({
@@ -90,13 +82,11 @@
     }
 
 
-    function handleCreateInstance(record){
-      // 打开填写信息的弹窗
-      newInstance({
-        modelId: record.id
-      })
-    }
   
+    function handleSuccess(){
+
+    }
+
     function handleGoToSpace(record){
       go('/calculatespace?mid='+record.id)
     }

@@ -5,7 +5,7 @@
       <BasicTable @register="registerTable" class="">
         <template #toolbar>
           <Authority :value="'Calculate:'+PerEnum.PUBLISH" >
-            <Button type="primary" @click="addNewSpace"> 新建计算空间</Button>
+            <Button type="primary" @click="handleCreateInstance"> 新建计算空间</Button>
           </Authority>
         </template>
         <template #bodyCell="{ column, record }">
@@ -13,17 +13,24 @@
             <TableAction
               :actions="[
                 {
+                  tooltip: '编辑',
+                  icon: 'clarity:note-edit-line',
+                  onClick: handleEdit.bind(null,record),
+                  auth: 'Calculate:'+PerEnum.ADD,
+                },
+                {
                   tooltip: '查看计算域',
                   icon: 'ant-design:rocket-outlined',
                   onClick: getRegionInstanceById.bind(null,record),
                   auth: 'Calculate:'+PerEnum.ADD,
-                }
+                },
               ]"
             />
           </template>
         </template>
       </BasicTable>
       <InstanceDrawer @register="registerDrawer" />
+      <InstanceInfoModal @register="registerModal" @success="handleSuccess"  />
     </PageWrapper>
   </template>
 <script lang="ts" setup>
@@ -34,7 +41,7 @@
   import { getInstancePageByModelId,getModelById } from "@/api/calculate/calculate"
   import { useModal } from '@/components/Modal';
   import { dictionaryItemPageList } from '@/api/base/dictionary';
-  import { instanceColumns, searchFormSchema } from '../calculate.data';
+  import { instanceColumns, searchFormSchema } from './instance.data';
   import { useMessage } from '@/hooks/web/useMessage';
   import { PerEnum } from '@/enums/perEnum';
   import { useGo } from '@/hooks/web/usePage';
@@ -42,6 +49,7 @@
   import InstanceDrawer from './InstanceDrawer.vue';
   import { useDrawer } from '@/components/Drawer';
   import { Button } from "ant-design-vue"
+  import InstanceInfoModal from './InstanceInfoModal.vue';
 
   const route = useRoute()
   const modelData = ref({})
@@ -89,10 +97,6 @@
   })
 
 
-  function addNewSpace(){
-    // go('/calculatemodel/index')
-  }  
-
 
   async function getRegionInstanceById(record){
     setDrawerProps({
@@ -106,6 +110,35 @@
     }as any)
   }
 
+  
+  function handleCreateInstance(){
+    // 打开填写信息的弹窗
+    setModalProps({
+      title: "请填写计算空间信息"
+    })
+    openModal(true,{
+      type: "insert",
+      modelId: route.query.mid
+    })
+  }
+
+
+  function handleEdit(record){
+    setModalProps({
+      title: "请填写计算空间信息"
+    })
+    openModal(true,{
+      type: "edit",
+      id: record.id,
+      modelId: route.query.mid,
+      name: record.name,
+      description: record.description,
+    })
+  }
+
+  function handleSuccess(){
+    reload()
+  }
   function closeDrawer(){
 
   }

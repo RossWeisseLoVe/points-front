@@ -11,6 +11,9 @@
 import { useDrag } from 'vue3-dnd'
 import { buildUUID } from '@/utils/uuid.ts'
 import { ItemTypes} from "../data.ts"
+import { useCalculateStore } from "@/store/modules/calculate"
+
+const calculateStore = useCalculateStore()
 
 const props = defineProps({
     item: Object
@@ -31,9 +34,13 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
   end: (item, monitor) => {
     const { id: droppedId, originalIndex } = item
     const didDrop = monitor.didDrop()
-    if (!didDrop) {
-
-      }
+    const result = monitor.getDropResult()
+    console.log("cnm",result)
+    if (result === null) {
+      calculateStore.callMethod("deleteItem-provider",droppedId)
+      calculateStore.callMethod("deleteItem-reciver",droppedId)
+      calculateStore.callMethod("deleteItem-transformer",droppedId)
+    }
   },
 }))
 

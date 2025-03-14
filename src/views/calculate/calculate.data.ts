@@ -39,7 +39,7 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'keyword',
+    field: 'name',
     label: '关键字',
     component: 'Input',
     componentProps: {
@@ -239,40 +239,7 @@ export const modelColumns: BasicColumn[] = [
   }
 ];
 
-export const instanceColumns = [
-  {
-    title: '名称',
-    dataIndex: 'id',
-    width: 200,
-    align: 'left',
-  },
-  {
-    title: '类型',
-    dataIndex: 'type',
-    slots: { customRender: 'type' },
-    width: 100,
-    align: 'left',
-  },
-  {
-    title: '说明',
-    dataIndex: 'description',
-    width: 100,
-    align: 'left',
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    slots: { customRender: 'status' },
-    width: 100,
-    align: 'left',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    width: 150,
-    align: 'left',
-  }
-]
+
 
 export const instanceRegionColumns = [
   {

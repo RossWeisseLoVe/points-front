@@ -64,7 +64,7 @@
     const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
       setDrawerProps({ confirmLoading: false });
       // 获取到实例数据，要和模板数据融合在一起
-      instanceId.value = data.instanceId
+      instanceId.value = data.id
       console.log("fuckmodel",data.model)
       setTableData(data.model.template)
     });
@@ -76,6 +76,7 @@
             typeName: record.className,
             regionId: record.id,
             modelId: record.modelId,
+            instanceId: instanceId.value
         })
     }
 

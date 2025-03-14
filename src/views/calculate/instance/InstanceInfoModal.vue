@@ -8,20 +8,22 @@
   import { message } from "ant-design-vue"
   import { BasicForm, useForm } from '@/components/Form';
   import { BasicModal, useModalInner } from '@/components/Modal';
-  import { formSchema } from "./modelmanage.data"
-  import { useCalculateStore } from "@/store/modules/calculate"
+  import { formSchema } from "./instance.data"
+  import { updateInstance,newInstance } from "@/api/calculate/calculate"
 
-  const calculateStore = useCalculateStore()
   const type = ref("")
   const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
     setModalProps({ confirmLoading: false });
     type.value = data.type
     setFieldsValue({
-      id:calculateStore.modelId,
-      name: calculateStore.modelName,
-      description: calculateStore.description
+      id:data.id,
+      modelId:data.modelId,
+      name: data.name,
+      description: data.description
     })
   });
+
+  const emits = defineEmits(['success'])
 
   const [registerForm, { resetFields, updateSchema, setFieldsValue, validate,clearValidate,getFieldsValue }] = useForm({
     labelWidth: 100,
@@ -33,15 +35,13 @@
 
 
   async function handleSubmit() {
-    const model = getFieldsValue()    
-    calculateStore.modelId = model.id
-    calculateStore.modelName = model.name
-    calculateStore.description = model.description
-    if(type.value==="save"){
-      const values = await validate();
-      await calculateStore.saveCalculateModel()
-      message.success("保存成功")
+    const values = await validate();
+    if(type.value==="insert"){
+      await newInstance(values)
+    }else{
+      await updateInstance(values)
     }
+    emits('success')
     clearValidate()
     closeModal()
   }
