@@ -35,7 +35,7 @@
           </template>
         </template>
       </BasicTable>
-      <contextHolder />
+      <InstanceInfoModal @register="registerModal"  />
     </PageWrapper>
   </template>
   <script lang="ts" setup>
@@ -50,6 +50,7 @@
     import { useMessage } from '@/hooks/web/useMessage';
     import { PerEnum } from '@/enums/perEnum';
     import { useGo } from '@/hooks/web/usePage';
+    import InstanceInfoModal from './InstanceInfoModal.vue';
   
     const go = useGo()
     const { createMessage } = useMessage();
@@ -90,6 +91,7 @@
 
 
     function handleCreateInstance(record){
+      // 打开填写信息的弹窗
       newInstance({
         modelId: record.id
       })
