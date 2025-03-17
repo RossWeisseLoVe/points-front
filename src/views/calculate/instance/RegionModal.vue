@@ -145,9 +145,10 @@
         // console.log("ffffffffffff",res)
         const res = await executeRegion({
           typeName: typeName.value,
-          modelId: modelId.value,
-          regionId: regionId.value,
-          regionInstanceId: regionInstanceId.value,
+          modelId: modelId.value,   //模型Id
+          regionId: regionId.value, //模型中的计算域Id
+          instanceId: instanceId.value, //实例Id
+          regionInstanceId: regionInstanceId.value,  //实例中的计算域Id
           param:formData.value
         })
         formData.value = res
