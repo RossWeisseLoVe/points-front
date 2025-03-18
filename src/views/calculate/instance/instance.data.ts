@@ -53,20 +53,19 @@ export const formSchema = [
     {
       title: '名称',
       dataIndex: 'name',
-      width: 200,
+      width: 100,
       align: 'left',
     },
     {
       title: '类型',
       dataIndex: 'type',
       slots: { customRender: 'type' },
-      width: 100,
+      width: 80,
       align: 'left',
     },
     {
       title: '说明',
       dataIndex: 'description',
-      width: 100,
       align: 'left',
     },
     {

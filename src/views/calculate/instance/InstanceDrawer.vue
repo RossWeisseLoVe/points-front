@@ -39,24 +39,29 @@
     const dataList = ref([])
     const emit = defineEmits(['success', 'register']);
     const [registerModal, { openModal, setModalProps }] = useModal();
-    const [registerTable, { reload,setTableData }] = useTable({
-        title: '列表',
+    const [registerTable, { reload,setTableData,redoHeight }] = useTable({
+        title: ()=>{
+          return '计算域 共'+dataList.value.length+"个"
+        },
         immediate: true,
         dataSource:dataList.value,
         columns:instanceRegionColumns,
-        pagination: false,
         labelWidth: 120,
+        scroll:{
+          y:document.documentElement.clientHeight - 200
+        },
         showAdvancedButton: false,
         showResetButton: false,
         autoSubmitOnEnter: true,
+        pagination:false,
         canColDrag: true,
         bordered: true,
         showIndexColumn: false,
         actionColumn: {
-        width: 180,
-        title: '操作',
-        dataIndex: 'action',
-        fixed: 'right',
+          width: 180,
+          title: '操作',
+          dataIndex: 'action',
+          fixed: 'right',
         },
     });  
   
@@ -66,7 +71,9 @@
       // 获取到实例数据，要和模板数据融合在一起
       instanceId.value = data.id
       console.log("fuckmodel",data.model)
+      dataList.value = data.model.template
       setTableData(data.model.template)
+      redoHeight()
     });
 
     function handleUseRegion(record){
@@ -91,4 +98,8 @@
       }
     }
   </script>
+
+  <style scoped>
+
+  </style>
   
