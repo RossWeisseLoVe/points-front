@@ -151,6 +151,9 @@
           regionInstanceId: regionInstanceId.value,  //实例中的计算域Id
           param:formData.value
         })
+        if(res===null){
+          return
+        }
         formData.value = res
       }
 
