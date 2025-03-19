@@ -12,7 +12,7 @@
             :is="getComponentType(field.formItem)"
             v-model:value="formData[field.propertyName]"
             :placeholder="field.placeholder || undefined"
-            :disabled="field.inputOrOutput === 'output'"
+            :disabled="getDisabled(field)"
             v-bind="getComponentProps(field)"
           />
         </FormItem>
@@ -22,7 +22,7 @@
 </template>
 <script lang="ts" setup>
   import { ref, computed, unref,reactive } from 'vue';
-  import { Form,FormItem,Input,InputNumber,Radio ,Select } from "ant-design-vue"
+  import { Form,FormItem,Input,InputNumber,message,Radio ,Select } from "ant-design-vue"
   import { getRegionInstanceByRegionIdAndInstanceId } from "@/api/calculate/calculate"
   import { getResult,executeRegion } from '@/api/calculate/calculate'
   import { BasicModal, useModalInner } from '@/components/Modal';
@@ -34,6 +34,7 @@
       const modelId = ref(undefined)
       const regionInstanceId = ref(undefined)
       const formData = ref({})
+      const autoInputList = ref([])
       const componentMap = {
         'Input': Input,
         'InputNumber': InputNumber,
@@ -45,6 +46,9 @@
           regionId: data.regionId,
           instanceId: data.instanceId
         })
+        if(res.relationIn!==undefined&&res.relationIn!==null){
+          autoInputList.value = Object.keys(res.relationIn)
+        }
         formData.value = res.data
         setModalProps({ confirmLoading: false });
         instanceId.value = data.instanceId
@@ -95,6 +99,15 @@
           return formData.value[list[0]] === parseInt(list[1])
         }else{
           return formData.value[list[0]] === list[1]
+        }
+      }
+
+      function getDisabled(field){
+        if(field.inputOrOutput === 'output'){
+          return true
+        }
+        if(autoInputList.value.includes(field.propertyName)){
+          return true
         }
       }
 
@@ -155,6 +168,7 @@
           return
         }
         formData.value = res
+        message.success("结果已保存")
       }
 
 
