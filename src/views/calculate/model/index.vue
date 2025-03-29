@@ -10,9 +10,15 @@
                 </CollapsePanel>
                 <CollapsePanel key="2">
                     <template #header>
-                        <Tag color="#87d068">计算器</Tag>
+                        <Tag color="#87d068">预定义计算器</Tag>
                     </template>
                   <PredefinedCalculators  v-for="item in predefinedCalList" :key="item.id" :item="item"/>
+                </CollapsePanel>
+                <CollapsePanel key="3">
+                    <template #header>
+                        <Tag color="#f56a00">预定义聚合器</Tag>
+                    </template>
+                  <Aggregators  v-for="item in predefinedCalList" :key="item.id" :item="item"/>
                 </CollapsePanel>
             </Collapse>
         </div>
@@ -42,6 +48,7 @@ import { onMounted, ref } from 'vue';
 import Rule from './components/Rule.vue';
 import Provider from "./components/provide/Provider.vue"
 import Transformer from "./components/transformer/Transformer.vue"
+import Aggregators from "./components/Aggregators.vue"
 import { useRoute } from 'vue-router' 
 import Reciver from "./components/recive/Reciver.vue"
 import PredefinedCalculators from "./components/PredefinedCalculators.vue"
