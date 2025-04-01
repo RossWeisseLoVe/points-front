@@ -28,7 +28,7 @@ const transformerList = calculateStore.transformerList
 
 
 const [collectedProps, drop] = useDrop(() => ({
-	accept: [ItemTypes.BOX,ItemTypes.CONVERT],
+	accept: [ItemTypes.BOX,ItemTypes.CONVERT,ItemTypes.AGGREGATORS],
   drop: dropFunc
 }))
 
@@ -38,7 +38,8 @@ function getHoverIndex(index){
   nowHoverIndex.value = index
 }
 
-function dropFunc(obj){
+function dropFunc(obj,monitor){
+  console.log(monitor.getItemType(),obj)
   insertCard(obj,obj.id,nowHoverIndex.value)
   nowHoverIndex.value = transformerList.length
   calculateStore.callMethod("deleteItem-provider",obj.id)

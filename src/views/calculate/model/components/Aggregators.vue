@@ -26,7 +26,10 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	type: ItemTypes.AGGREGATORS,
 	item: ()=>({
     id: buildUUID(),
-    info: props.item
+    info: {
+      ...props.item,
+      type:ItemTypes.AGGREGATORS
+    }
   }),
   end: (item, monitor) => {
     const { id: droppedId, originalIndex } = item

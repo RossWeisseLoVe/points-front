@@ -107,6 +107,7 @@ export const useCalculateStore = defineStore('calculate',{
         regionList.push({
           id:item.id,
           info: {
+            type:item.info.type,
             className: item.info.className,
             description: item.info.description,
             properties: item.info.properties
@@ -120,6 +121,7 @@ export const useCalculateStore = defineStore('calculate',{
         regionList.push({
           id:item.id,
           info: {
+            type:item.info.type,
             className: item.info.className,
             description: item.info.description,
             properties: item.info.properties
@@ -133,6 +135,7 @@ export const useCalculateStore = defineStore('calculate',{
         regionList.push({
           id:item.id,
           info: {
+            type:item.info.type,
             className: item.info.className,
             description: item.info.description,
             properties: item.info.properties

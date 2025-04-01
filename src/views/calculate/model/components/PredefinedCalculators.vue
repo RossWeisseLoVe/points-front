@@ -26,7 +26,10 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	type: ItemTypes.CONVERT,
 	item: ()=>({
     id: buildUUID(),
-    info: props.item
+    info: {
+      ...props.item,
+      type:ItemTypes.CONVERT
+    }
   }),
   end: (item, monitor) => {
     const { id: droppedId, originalIndex } = item

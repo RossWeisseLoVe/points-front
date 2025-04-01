@@ -18,7 +18,7 @@
                     <template #header>
                         <Tag color="#f56a00">预定义聚合器</Tag>
                     </template>
-                  <Aggregators  v-for="item in predefinedCalList" :key="item.id" :item="item"/>
+                  <Aggregators  v-for="item in aggregatorsList" :key="item.id" :item="item"/>
                 </CollapsePanel>
             </Collapse>
         </div>
@@ -57,11 +57,12 @@ import { useCalculateStore } from "@/store/modules/calculate"
 import { onBeforeMount } from 'vue';
 import InfoModal from "./components/InfoModal.vue"
 import { useModal } from '@/components/Modal';
+import { aggregatorsList } from "./data.ts"
 
 const [registerModal, { openModal, setModalProps }] = useModal();
 const calculateStore = useCalculateStore()
 const route = useRoute()
-const activeKey = ref(["1","2"])
+const activeKey = ref(["1","2","3"])
 const ruleList = ref([])
 onMounted(async ()=>{
    await calculateStore.initState(route.query.mid)
