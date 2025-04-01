@@ -1,18 +1,35 @@
 <template>
     <div :ref="node => drag(drop(node))" class="provider-box" >
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
-      <div class="provider-header">
-        <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
-          {{ getAvatar(provider) }}
-        </Avatar>
-        <div>{{ provider.info.description }}</div>
-      </div>
-      <div class="item-container">
-        <div v-for="item in provider.info.properties" :key="item.id">
-          <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-          <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+      <template v-if="provider.info.type===ItemTypes.BOX">
+        <div class="provider-header">
+          <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
+            {{ getAvatar(provider) }}
+          </Avatar>
+          <div>{{ provider.info.description }}</div>
         </div>
-      </div>
+        <div class="item-container">
+          <div v-for="item in provider.info.properties" :key="item.id">
+            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
+            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="provider.info.type===ItemTypes.AGGREGATORS">
+        <div class="provider-header">
+          <Avatar style="background-color: #cd201f" size="small" class="class-avatar">
+            {{ getAvatar(provider) }}
+          </Avatar>
+          <div>{{ provider.info.description }}</div>
+        </div>
+        <div class="item-container">
+          <div v-for="item in provider.info.properties" :key="item.id">
+            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
+            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+          </div>
+        </div>
+      </template>
+
     </div>
 </template>
 <script lang="ts" setup>
@@ -58,7 +75,7 @@ const [collect, drag, dragPreview] = useDrag(() => ({
 }))
 const hoverIndex = ref('')
 const [, drop] = useDrop(() => ({
-  accept: [ItemTypes.BOX,ItemTypes.SORTBOX],
+  accept: [ItemTypes.BOX,ItemTypes.SORTBOX,ItemTypes.CONVERT,ItemTypes.AGGREGATORS],
   hover(item,monitor) {
     const { id: draggedId,type } = item
     if(type === "reciver" || type ==="provider"){
