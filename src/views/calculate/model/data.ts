@@ -55,43 +55,43 @@ export const formSchema: FormSchema[] = [
 
 export const aggregatorsList = [
   {
-    id: "1231231",
+    id: "aggregators0001",
     description: "求方差",
-    className: "com.dragon.flow.model.test.Variance",
+    className: "com.dragon.flow.model.aggregators.Variance",
     properties:[
       {
         id:123,
-        formItemName: "输入值",
+        formItemName: "输入列表",
         inputOrOutput: "input",
-        propertyName: "in",
+        propertyName: "list",
         propertyType: "Double",
       },
       {
         id:124,
-        formItemName: "输出值",
+        formItemName: "方差值",
         inputOrOutput: "output",
-        propertyName: "out",
+        propertyName: "singleOutput",
         propertyType: "Double",
       }
     ]
   },
   {
-    id: "1231232",
-    description: "求平方",
-    className: "com.dragon.flow.model.test.Square",
+    id: "aggregators0002",
+    description: "平均值",
+    className: "com.dragon.flow.model.aggregators.Average",
     properties:[
       {
         id:123,
-        formItemName: "输入值",
+        formItemName: "输入列表",
         inputOrOutput: "input",
-        propertyName: "in",
+        propertyName: "list",
         propertyType: "Double",
       },
       {
         id:124,
-        formItemName: "输出值",
+        formItemName: "平均值",
         inputOrOutput: "output",
-        propertyName: "out",
+        propertyName: "average",
         propertyType: "Double",
       }
     ]

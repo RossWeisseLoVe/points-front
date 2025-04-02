@@ -16,7 +16,7 @@
 import { Avatar } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs,onMounted } from "vue"
-import ProviderItem from "./ProviderItem.vue"
+import ProviderItem from "../propertyItem/ProviderItem.vue"
 import { ItemTypes } from '../../data.ts'
 import { DeleteTwoTone } from '@ant-design/icons-vue';
 const props = defineProps({

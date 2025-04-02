@@ -20,8 +20,8 @@
 import { Avatar } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
-import ProviderItem from "../provide/ProviderItem.vue"
-import ReciverItem from "./ReciverItem.vue"
+import ProviderItem from "../propertyItem/ProviderItem.vue"
+import ReciverItem from "../propertyItem/ReciverItem.vue"
 import { ItemTypes } from '../../data.ts'
 import {
   DeleteTwoTone

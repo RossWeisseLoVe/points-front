@@ -24,8 +24,9 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+            <ProviderItem v-else-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
+
           </div>
         </div>
       </template>
@@ -36,8 +37,9 @@
 import { Avatar } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
-import ProviderItem from "../provide/ProviderItem.vue"
-import ReciverItem from "../recive/ReciverItem.vue"
+import ProviderItem from "../propertyItem/ProviderItem.vue"
+import ReciverItem from "../propertyItem/ReciverItem.vue"
+import AggregatorsReceive from "../propertyItem/AggregatorReceiveItem.vue"
 import { ItemTypes } from '../../data.ts'
 import {
   DeleteTwoTone
