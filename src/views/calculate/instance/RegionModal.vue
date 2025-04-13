@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" title="123" @ok="handleSubmit" >
+  <BasicModal v-bind="$attrs" @register="registerModal" title="123" @ok="handleSubmit"     @open-change="handleReset">
     <Form :model="formData" layout="vertical">
       <div v-for="field in fields" :key="field.id">
         <FormItem
@@ -129,6 +129,20 @@
             return '';
         }
       };
+
+      function handleReset(open){
+        if(open){
+          fields.value = {}
+          typeName.value = ""
+          instanceId.value = undefined
+          instanceId.value = undefined
+          regionId.value = undefined
+          modelId.value = undefined
+          regionInstanceId.value = undefined
+          formData.value = {}
+          autoInputList.value = []
+        }
+      }
 
       const getComponentProps = (field) => {
         const props = {};

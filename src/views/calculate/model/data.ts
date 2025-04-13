@@ -70,7 +70,7 @@ export const aggregatorsList = [
         id:124,
         formItemName: "方差值",
         inputOrOutput: "output",
-        propertyName: "singleOutput",
+        propertyName: "result",
         propertyType: "Double",
       }
     ]
@@ -81,17 +81,17 @@ export const aggregatorsList = [
     className: "com.dragon.flow.model.aggregators.Average",
     properties:[
       {
-        id:123,
+        id:125,
         formItemName: "输入列表",
         inputOrOutput: "input",
         propertyName: "list",
         propertyType: "Double",
       },
       {
-        id:124,
+        id:126,
         formItemName: "平均值",
         inputOrOutput: "output",
-        propertyName: "average",
+        propertyName: "result",
         propertyType: "Double",
       }
     ]
