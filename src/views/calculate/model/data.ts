@@ -3,7 +3,8 @@ export const ItemTypes = {
   SORTBOX:'sortbox',
   PROPERTY: 'property',
   CONVERT: 'convert',
-  AGGREGATORS: 'Aggregators'
+  AGGREGATORS: 'Aggregators',
+  OTHERMODEL: 'othermodel'
 }
 
 

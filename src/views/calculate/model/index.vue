@@ -10,15 +10,19 @@
                 </CollapsePanel>
                 <CollapsePanel key="2">
                     <template #header>
+                        <Tag color="#f56a00">预定义聚合器</Tag>
+                    </template>
+                    <Aggregators  v-for="item in aggregatorsList" :key="item.id" :item="item"/>
+                    <!-- <template #header>
                         <Tag color="#87d068">预定义计算器</Tag>
                     </template>
-                  <PredefinedCalculators  v-for="item in predefinedCalList" :key="item.id" :item="item"/>
+                  <PredefinedCalculators  v-for="item in predefinedCalList" :key="item.id" :item="item"/> -->
                 </CollapsePanel>
                 <CollapsePanel key="3">
                     <template #header>
-                        <Tag color="#f56a00">预定义聚合器</Tag>
+                        <Tag color="#ffc53d">嵌套模型</Tag>
                     </template>
-                  <Aggregators  v-for="item in aggregatorsList" :key="item.id" :item="item"/>
+                    <OtherModels v-for="item in allModelsList" :key="item.id" :item="item"/>
                 </CollapsePanel>
             </Collapse>
         </div>
@@ -43,7 +47,7 @@
 <script lang="ts" setup>
 import { PageWrapper } from '@/components/Page';
 import { Card,Collapse,CollapsePanel,Tag,Button } from "ant-design-vue" 
-import { getAllRulesWithProperty,saveModel } from "@/api/calculate/calculate"
+import { getAllRulesWithProperty,getAllModels } from "@/api/calculate/calculate"
 import { onMounted, ref } from 'vue';
 import Rule from './components/Rule.vue';
 import Provider from "./components/provide/Provider.vue"
@@ -53,10 +57,11 @@ import { useRoute } from 'vue-router'
 import Reciver from "./components/recive/Reciver.vue"
 import PredefinedCalculators from "./components/PredefinedCalculators.vue"
 import { predefinedCalList } from "../calculate.data"
+import OtherModels from './components/OtherModels.vue';
 import { useCalculateStore } from "@/store/modules/calculate"
 import { onBeforeMount } from 'vue';
 import InfoModal from "./components/InfoModal.vue"
-import { useModal } from '@/components/Modal';
+import { useModal } from '@/components/Modal'
 import { aggregatorsList } from "./data.ts"
 
 const [registerModal, { openModal, setModalProps }] = useModal();
@@ -64,11 +69,25 @@ const calculateStore = useCalculateStore()
 const route = useRoute()
 const activeKey = ref(["1","2","3"])
 const ruleList = ref([])
+const allModelsList = ref([])
 onMounted(async ()=>{
    await calculateStore.initState(route.query.mid)
+   getAllModelsList()
+   getAllRules()
+})
+
+async function getAllModelsList(){
+   const allModels = await getAllModels()
+   allModelsList.value = allModels.filter(item=>{
+    return item.id!==route.query.mid
+   })
+}
+
+async function getAllRules() {
    const res = await getAllRulesWithProperty()
    ruleList.value = res
-})
+}
+
 
 onBeforeMount(()=>{
     calculateStore.resetState()  //清除state

@@ -1,8 +1,8 @@
-<!-- 预定义计算器 -->
+<!-- 其他已经定义好的模型 -->
 <template>
     <div :ref="dragSource" class="tech-card">
         <div class="card-header">
-            <h3 class="card-title">{{getClassName(item)}}</h3>
+            <h3 class="card-title">{{item.name}}</h3>
         </div>
         <span class="card-desc">{{ item.description }}</span>
         <div class="card-line"></div>
@@ -17,14 +17,9 @@ const props = defineProps({
     item: Object
 })
 
-function getClassName(item){
-  const list = item.className.split(".")
-  return list[list.length - 1]
-}
-
 
 const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
-	type: ItemTypes.CONVERT,
+	type: ItemTypes.OTHERMODEL,
 	item: ()=>({
     id: buildUUID(),
     info: {
@@ -48,11 +43,11 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 .tech-card{
   color: #fff;
   background: linear-gradient(
-    135deg,
-    #87d068 0%,
-    #9ade7a 50%,
-    #6fba54 100%
-  );
+  135deg,
+  #ffc53d 0%,      /* 主色：琥珀黄 */
+  #fadb14 50%,     /* 淡金色 */
+  #e6a800 100%     /* 浅米黄 */
+);
   border: 1px solid #f0f0f0;
   border-radius: 8px;
   padding: 8px;

@@ -1,4 +1,5 @@
 <template>
+<Dropdown :trigger="['contextmenu']">
     <div :class="rotateFlag ? 'rotate-line':''">
         <div :ref="dragSource" class="provider-item" @click="setSourceObj" v-click-outside="onClickOutside">
             <!-- <Tag color="#108ee9" class="count-badge">123</Tag> -->
@@ -6,6 +7,12 @@
             <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
         </div>
     </div>
+    <template #overlay>
+      <Menu>
+        <MenuItem key="1">设置为可供外部使用数据</MenuItem>
+      </Menu>
+    </template>
+</Dropdown>
 </template>
 <script lang="ts" setup>
 import { useDrag } from 'vue3-dnd'
@@ -14,6 +21,7 @@ import { watch ,computed} from 'vue'
 import vClickOutside from '@/directives/clickOutside';
 import { toRefs } from '@vueuse/core'
 import { Tag } from "ant-design-vue"
+import { Dropdown,Menu,MenuItem } from 'ant-design-vue';
 const calculateStore = useCalculateStore()
 
 const props = defineProps({

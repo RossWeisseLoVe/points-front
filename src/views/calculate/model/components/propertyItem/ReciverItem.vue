@@ -1,4 +1,5 @@
 <template>
+<Dropdown :trigger="['contextmenu']">
   <div :ref="drop" :class="isAnime ? 'anime provider-item' :'provider-item' ">
       <div class="mb-1">{{ item.propertyName }}</div>
       <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
@@ -10,11 +11,18 @@
         </div>
       </div>
   </div>
+  <template #overlay>
+      <Menu>
+        <MenuItem key="1">设置为可接收外部数据</MenuItem>
+      </Menu>
+    </template>
+</Dropdown>
 </template>
 <script lang="ts" setup>
 import { useDrop } from 'vue3-dnd'
 import { useCalculateStore } from "@/store/modules/calculate"
 import { ref,computed,onMounted } from "vue"
+import { Dropdown,Menu,MenuItem } from "ant-design-vue"
 import vClickOutside from '@/directives/clickOutside';
 import {
   DeleteTwoTone
