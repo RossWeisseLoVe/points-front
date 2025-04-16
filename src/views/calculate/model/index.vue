@@ -31,7 +31,7 @@
                 <Provider class="h-full"/>
                 <div class="toolBar">
                     <Button type="primary" @click="openInfoModal('save')" class="tool-button">保存</Button>
-                    <Button type="primary"  class="tool-button">检查</Button>
+                    <Button type="primary" @click="checkModel" class="tool-button">检查</Button>
                     <Button type="primary"  class="tool-button" @click="openInfoModal('info')">信息</Button>
                     <Button type="primary"  class="tool-button">流程</Button>
                 </div>
@@ -114,6 +114,10 @@ function openInfoModal(type){
     openModal(true, {
         type
     });
+}
+
+function checkModel(){
+    console.log("foreignProp:",calculateStore.foreignProperties)
 }
 
 </script>

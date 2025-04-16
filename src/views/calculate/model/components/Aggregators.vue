@@ -11,6 +11,7 @@
 import { useDrag } from 'vue3-dnd'
 import { buildUUID } from '@/utils/uuid.ts'
 import { ItemTypes} from "../data.js"
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
     item: Object
@@ -27,7 +28,7 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	item: ()=>({
     id: buildUUID(),
     info: {
-      ...props.item,
+      ...cloneDeep(props.item),
       type:ItemTypes.AGGREGATORS
     }
   }),

@@ -3,6 +3,20 @@
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
       <template v-if="provider.info.type===ItemTypes.BOX">
         <div class="provider-header">
+          <Avatar  style="background-color: #2db7f5" size="small" class="class-avatar">
+            {{ getAvatar(provider) }}
+          </Avatar>
+          <div>{{ provider.info.description }}</div>
+        </div>
+        <div class="item-container">
+          <div v-for="item in provider.info.properties" :key="item.id">
+            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
+            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="provider.info.type===ItemTypes.AGGREGATORS">
+        <div class="provider-header">
           <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
             {{ getAvatar(provider) }}
           </Avatar>
@@ -10,31 +24,32 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ProviderItem v-else-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
           </div>
         </div>
       </template>
-      <template v-else-if="provider.info.type===ItemTypes.AGGREGATORS">
+      <template v-else-if="provider.info.type===ItemTypes.OTHERMODEL">
         <div class="provider-header">
-          <Avatar style="background-color: #cd201f" size="small" class="class-avatar">
-            {{ getAvatar(provider) }}
+          <Avatar style="background-color: #ffc53d" size="small" class="class-avatar">
+            {{ provider.info.name.slice(0, 1) }}
           </Avatar>
-          <div>{{ provider.info.description }}</div>
+          <Tooltip color="#ffc53d" :title="provider.info.name+' : '+provider.info.description">
+            <div class="title-name">{{ provider.info.name }}</div>
+          </Tooltip>
         </div>
         <div class="item-container">
-          <div v-for="item in provider.info.properties" :key="item.id">
-            <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
-            <ProviderItem v-else-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id"/>
-
+          <div v-for="item in provider.info.foreignProperties" :key="item.id">
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ReciverItem v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
           </div>
         </div>
       </template>
-
     </div>
 </template>
 <script lang="ts" setup>
-import { Avatar } from "ant-design-vue"
+import { Avatar,Tooltip } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
 import ProviderItem from "../propertyItem/ProviderItem.vue"
@@ -51,6 +66,7 @@ const props = defineProps({
   findCard: Function,
   insertCard: Function
 })
+
 
 const emits =defineEmits(['hoverIndex', 'deleteItem'])
 
@@ -77,7 +93,7 @@ const [collect, drag, dragPreview] = useDrag(() => ({
 }))
 const hoverIndex = ref('')
 const [, drop] = useDrop(() => ({
-  accept: [ItemTypes.BOX,ItemTypes.SORTBOX,ItemTypes.CONVERT,ItemTypes.AGGREGATORS],
+  accept: [ItemTypes.BOX,ItemTypes.SORTBOX,ItemTypes.OTHERMODEL,ItemTypes.AGGREGATORS],
   hover(item,monitor) {
     const { id: draggedId,type } = item
     if(type === "reciver" || type ==="provider"){
@@ -186,10 +202,12 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
      border-bottom: 1px solid #f0f0f0;
      padding-bottom: 8px;
      div{
-       font-size: 14px;
+      font-size: 14px;
+      max-width: 110px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
      }
-      .class-avatar{
-      }
 
    }
    .item-container{

@@ -15,6 +15,7 @@ export const useCalculateStore = defineStore('calculate',{
     modelId: undefined,
     description: undefined,
     modelName: undefined,
+    foreignProperties: []
   }),
   getters: {
 
@@ -31,6 +32,7 @@ export const useCalculateStore = defineStore('calculate',{
       this.modelId = undefined
       this.description = undefined
       this.modelName = undefined
+      this.foreignProperties = []
     },
     async initState(id){
       if(id!==undefined){
@@ -38,6 +40,9 @@ export const useCalculateStore = defineStore('calculate',{
         this.modelId = res.id
         this.description = res.description
         this.modelName = res.name
+        if(res.foreignProperties){
+          this.foreignProperties = res.foreignProperties
+        }
         for (const item of res.template) {
           if(item.type === "provider"){
             this.providerList.push(item)
@@ -149,12 +154,21 @@ export const useCalculateStore = defineStore('calculate',{
         template:regionList,
         id: this.modelId,
         name: this.modelName,
-        description: this.description
+        description: this.description,
+        foreignProperties:this.foreignProperties
       })
       this.modelId = res.id
       this.modelName = res.name
       this.description = res.description
       console.log("modelMessage",res)
+    },
+    setForeignProperties(item){
+      this.foreignProperties.push(item)
+    },
+    removeForeignProperties(item){
+      this.foreignProperties = this.foreignProperties.filter(data=>{
+        return !(item.regionId===data.regionId&&item.id===data.id)
+      })
     }
   },
 });

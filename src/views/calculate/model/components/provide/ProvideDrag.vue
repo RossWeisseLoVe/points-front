@@ -2,18 +2,18 @@
     <div :ref="node => drag(drop(node))" class="provider-box" >
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
       <div class="provider-header">
-        <Avatar style="background-color: #87d068" size="small" class="class-avatar">
+        <Avatar :style="{backgroundColor: getAvatarColor()}" size="small" class="class-avatar">
           {{ getAvatar(provider) }}
         </Avatar>
         <div>{{ provider.info.description }}</div>
       </div>
       <div class="item-container" >
-        <ProviderItem v-for="item in getProviderItemList(provider)" :key="item.id" :item="item" :id="provider.id"/>
+        <ProviderItem v-for="item in getProviderItemList(provider)" :key="item.id" :item="item" :id="provider.id" :regionType="provider.info.type"/>
       </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { Avatar } from "ant-design-vue"
+import { Avatar,BadgeRibbon } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs,onMounted } from "vue"
 import ProviderItem from "../propertyItem/ProviderItem.vue"
@@ -27,6 +27,15 @@ const props = defineProps({
   insertCard: Function
 })
 
+function getAvatarColor(){
+  if(props.provider.info.type===ItemTypes.BOX){
+    return "#2db7f5"
+  }else if(props.provider.info.type===ItemTypes.AGGREGATORS){
+    return "#f56a00"
+  }else if(props.provider.info.type===ItemTypes.OTHERMODEL){
+    return "#ffc53d"
+  }
+}
 
 const emits =defineEmits(['hoverIndex', 'deleteItem'])
 

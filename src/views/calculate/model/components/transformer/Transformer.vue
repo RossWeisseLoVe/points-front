@@ -28,7 +28,7 @@ const transformerList = calculateStore.transformerList
 
 
 const [collectedProps, drop] = useDrop(() => ({
-	accept: [ItemTypes.BOX,ItemTypes.CONVERT,ItemTypes.AGGREGATORS],
+	accept: [ItemTypes.BOX,ItemTypes.AGGREGATORS,ItemTypes.OTHERMODEL],
   drop: dropFunc
 }))
 

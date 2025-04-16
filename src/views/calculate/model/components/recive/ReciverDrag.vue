@@ -3,14 +3,14 @@
       <template v-if="provider.info.type==='box'">
         <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
         <div class="provider-header">
-          <Avatar style="background-color: #1890ff" size="small" class="class-avatar">
+          <Avatar :style="{backgroundColor: getAvatarColor()}" size="small" class="class-avatar">
             {{ getAvatar(provider) }}
           </Avatar>
           <div>{{ provider.info.description }}</div>
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn"/>
+            <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
           </div>
         </div>
       </template>
@@ -33,6 +33,17 @@ const props = defineProps({
   findCard: Function,
   insertCard: Function
 })
+
+function getAvatarColor(){
+  if(props.provider.info.type===ItemTypes.BOX){
+    return "#2db7f5"
+  }else if(props.provider.info.type===ItemTypes.AGGREGATORS){
+    return "#f56a00"
+  }else if(props.provider.info.type===ItemTypes.OTHERMODEL){
+    return "#ffc53d"
+  }
+}
+
 
 const emits =defineEmits(['hoverIndex', 'deleteItem'])
 

@@ -1,6 +1,8 @@
 <template>
 <Dropdown :trigger="['contextmenu']">
+  
   <div :ref="drop" :class="isAnime ? 'anime provider-item' :'provider-item' ">
+      <Tag color="#cd201f" class="count-badge" size="small" v-if="item.isForeign===1&&regionType!==ItemTypes.OTHERMODEL">外</Tag>
       <div class="mb-1">{{ item.propertyName }}</div>
       <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
       <div :class="rotateFlag ? 'rotate-line':''">
@@ -12,8 +14,8 @@
       </div>
   </div>
   <template #overlay>
-      <Menu>
-        <MenuItem key="1">设置为可接收外部数据</MenuItem>
+      <Menu v-if="regionType!==ItemTypes.OTHERMODEL">
+        <MenuItem key="1" @click="setForeign">{{ item.isForeign === 1 ? "取消供外部使用" : "设置可供外部使用" }}</MenuItem>
       </Menu>
     </template>
 </Dropdown>
@@ -22,19 +24,44 @@
 import { useDrop } from 'vue3-dnd'
 import { useCalculateStore } from "@/store/modules/calculate"
 import { ref,computed,onMounted } from "vue"
-import { Dropdown,Menu,MenuItem } from "ant-design-vue"
+import { Dropdown,Menu,MenuItem,Tag } from "ant-design-vue"
 import vClickOutside from '@/directives/clickOutside';
 import {
   DeleteTwoTone
 } from '@ant-design/icons-vue';
+import { ItemTypes } from '../../data';
 
 const droppedObj = ref({})
 
 const props = defineProps({
   item: Object,
   id:String,
-  relation: Object
+  relation: Object,
+  regionType:String
 })
+
+function setForeign(){
+  if(props.item.isForeign===1){
+    props.item.isForeign = 0
+    // 取消设置向外提供
+    const data = {
+      ...props.item,
+      regionId:props.id,
+      regionType:props.regionType
+    }
+    calculateStore.removeForeignProperties(data)
+  }else{
+    props.item.isForeign = 1
+    // 设置向外提供
+    const data = {
+      ...props.item,
+      regionId:props.id,
+      regionType:props.regionType
+    }
+    calculateStore.setForeignProperties(data)
+
+  }
+}
 
 onMounted(()=>{
   if(props.relation===undefined||props.relation===null){
@@ -120,10 +147,16 @@ function onClickOutside(){
   color: #fff;
   padding: 4px;
   width: 94%;
-  margin-left: 5px;
-  margin-bottom: 4px;
+  margin: 4px;
   background-color: #1890ff;
   border-radius: 4px;
+  position: relative;
+  .count-badge{
+    position: absolute;
+    top: -3px;
+    right: -12px;
+    font-size: 12px;
+  }
   .dropped-item{
     position: relative;
     margin-top: 4px;

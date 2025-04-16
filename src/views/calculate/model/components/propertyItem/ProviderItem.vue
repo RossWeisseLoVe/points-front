@@ -2,14 +2,14 @@
 <Dropdown :trigger="['contextmenu']">
     <div :class="rotateFlag ? 'rotate-line':''">
         <div :ref="dragSource" class="provider-item" @click="setSourceObj" v-click-outside="onClickOutside">
-            <!-- <Tag color="#108ee9" class="count-badge">123</Tag> -->
+            <Tag color="#cd201f" class="count-badge" size="small" v-if="item.isForeign===1&&regionType!==ItemTypes.OTHERMODEL">外</Tag>
             <div class="mb-1">{{ item.propertyName }}</div>
             <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
         </div>
-    </div>
+      </div>
     <template #overlay>
-      <Menu>
-        <MenuItem key="1">设置为可供外部使用数据</MenuItem>
+      <Menu v-if="regionType!==ItemTypes.OTHERMODEL">
+        <MenuItem key="1" @click="setForeign">{{ item.isForeign === 1 ? "取消供外部使用" : "设置可供外部使用" }}</MenuItem>
       </Menu>
     </template>
 </Dropdown>
@@ -20,17 +20,45 @@ import { useCalculateStore } from "@/store/modules/calculate"
 import { watch ,computed} from 'vue'
 import vClickOutside from '@/directives/clickOutside';
 import { toRefs } from '@vueuse/core'
-import { Tag } from "ant-design-vue"
-import { Dropdown,Menu,MenuItem } from 'ant-design-vue';
+import { Dropdown,Menu,MenuItem,Tag,Badge } from 'ant-design-vue';
+import { ItemTypes } from '../../data';
+
+
 const calculateStore = useCalculateStore()
 
 const props = defineProps({
     item: Object, 
-    id:String
+    id:String,
+    regionType:String
 })
 
 
+function setForeign(){
+  if(props.item.isForeign===1){
+    props.item.isForeign = 0
+    // 取消设置向外提供
+    const data = {
+      ...props.item,
+      regionId:props.id,
+      regionType:props.regionType
+      
+    }
+    calculateStore.removeForeignProperties(data)
+  }else{
+    props.item.isForeign = 1
+    // 设置向外提供
+    const data = {
+      ...props.item,
+      regionId:props.id,
+      regionType:props.regionType
+    }
+    calculateStore.setForeignProperties(data)
+
+  }
+}
+
 const rotateFlag = computed(()=>{
+  console.log("item",props.item)
   if(calculateStore.sourceObj=== undefined){
     return false
   }
@@ -82,12 +110,12 @@ function onClickOutside(){
     background-color: #87d068;
     position: relative;
     border-radius: 4px;
-    .count-badge{
-      position: absolute;
-      top: 0;
-      right: 0;
-      transform: translateX(20%);
-    }
+  .count-badge{
+    position: absolute;
+    top: -3px;
+    right: -12px;
+    font-size: 12px;
+  }
 }
 
   // 转动的边框线(两条)
