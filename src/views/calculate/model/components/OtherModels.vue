@@ -25,6 +25,7 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
     id: buildUUID(),
     info: {
       ...cloneDeep(props.item),
+      className:props.item.name,
       type:ItemTypes.OTHERMODEL
     }
   }),

@@ -32,14 +32,14 @@
       <template v-else-if="provider.info.type===ItemTypes.OTHERMODEL">
         <div class="provider-header">
           <Avatar style="background-color: #ffc53d" size="small" class="class-avatar">
-            {{ provider.info.name.slice(0, 1) }}
+            {{ provider.info.className.slice(0, 1) }}
           </Avatar>
-          <Tooltip color="#ffc53d" :title="provider.info.name+' : '+provider.info.description">
-            <div class="title-name">{{ provider.info.name }}</div>
+          <Tooltip color="#ffc53d" :title="provider.info.className+' : '+provider.info.description">
+            <div class="title-name">{{ provider.info.className }}</div>
           </Tooltip>
         </div>
         <div class="item-container">
-          <div v-for="item in provider.info.foreignProperties" :key="item.id">
+          <div v-for="item in provider.info.properties" :key="item.id">
             <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
             <ReciverItem v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
             <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>

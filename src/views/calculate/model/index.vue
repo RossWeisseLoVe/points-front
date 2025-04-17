@@ -117,7 +117,7 @@ function openInfoModal(type){
 }
 
 function checkModel(){
-    console.log("foreignProp:",calculateStore.foreignProperties)
+    console.log("foreignProp:",calculateStore.properties)
 }
 
 </script>
