@@ -1,6 +1,7 @@
 
 import { defineStore } from 'pinia';
 import { saveModel,getModelById } from "@/api/calculate/calculate"
+import { ItemTypes } from '@/views/calculate/model/data';
 
 
 export const useCalculateStore = defineStore('calculate',{
@@ -15,7 +16,7 @@ export const useCalculateStore = defineStore('calculate',{
     modelId: undefined,
     description: undefined,
     modelName: undefined,
-    foreignProperties: []
+    properties: []
   }),
   getters: {
 
@@ -32,7 +33,7 @@ export const useCalculateStore = defineStore('calculate',{
       this.modelId = undefined
       this.description = undefined
       this.modelName = undefined
-      this.foreignProperties = []
+      this.properties = []
     },
     async initState(id){
       if(id!==undefined){
@@ -40,9 +41,7 @@ export const useCalculateStore = defineStore('calculate',{
         this.modelId = res.id
         this.description = res.description
         this.modelName = res.name
-        if(res.foreignProperties){
-          this.foreignProperties = res.foreignProperties
-        }
+        this.properties = res.properties
         for (const item of res.template) {
           if(item.type === "provider"){
             this.providerList.push(item)
@@ -109,53 +108,65 @@ export const useCalculateStore = defineStore('calculate',{
     async saveCalculateModel(){
       const regionList:Array<any> = []
       for (const item of this.providerList) {
-        regionList.push({
-          id:item.id,
-          info: {
+          const info ={
             type:item.info.type,
             className: item.info.className,
             description: item.info.description,
-            properties: item.info.properties
-          },
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
-          type:'provider'
-        })
+            properties: item.info.properties,
+          }
+          if(item.info.type===ItemTypes.OTHERMODEL){
+            info.sourceModelId = item.info.id
+          }
+          regionList.push({
+            id:item.id,
+            info,
+            relationOut:item.relationOut,
+            relationIn: item.relationIn,
+            type:'provider'
+          })
       }
       for (const item of this.transformerList) {
-        regionList.push({
-          id:item.id,
-          info: {
+          const info ={
             type:item.info.type,
             className: item.info.className,
             description: item.info.description,
-            properties: item.info.properties
-          },
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
-          type:'transformer'
-        })
+            properties: item.info.properties,
+          }
+          if(item.info.type===ItemTypes.OTHERMODEL){
+            info.sourceModelId = item.info.id
+          }
+          regionList.push({
+            id:item.id,
+            info,
+            relationOut:item.relationOut,
+            relationIn: item.relationIn,
+            type:'transformer'
+          })
       }
       for (const item of this.reciverList) {
-        regionList.push({
-          id:item.id,
-          info: {
+          const info ={
             type:item.info.type,
             className: item.info.className,
             description: item.info.description,
-            properties: item.info.properties
-          },
-          relationOut:item.relationOut,
-          relationIn: item.relationIn,
-          type:'reciver'
-        })
+            properties: item.info.properties,
+          }
+          if(item.info.type===ItemTypes.OTHERMODEL){
+            info.sourceModelId = item.info.id
+          }
+          regionList.push({
+            id:item.id,
+            info,
+            relationOut:item.relationOut,
+            relationIn: item.relationIn,
+            type:'reciver'
+          })
       }
       const res = await saveModel({
         template:regionList,
         id: this.modelId,
         name: this.modelName,
         description: this.description,
-        foreignProperties:this.foreignProperties
+        properties:this.properties
       })
       this.modelId = res.id
       this.modelName = res.name
@@ -163,10 +174,10 @@ export const useCalculateStore = defineStore('calculate',{
       console.log("modelMessage",res)
     },
     setForeignProperties(item){
-      this.foreignProperties.push(item)
+      this.properties.push(item)
     },
     removeForeignProperties(item){
-      this.foreignProperties = this.foreignProperties.filter(data=>{
+      this.properties = this.properties.filter(data=>{
         return !(item.regionId===data.regionId&&item.id===data.id)
       })
     }
