@@ -68,7 +68,11 @@ onMounted(()=>{
   if(props.relation===undefined||props.relation===null){
     return
   }
-  const dataList = props.relation[props.item.propertyName]
+  let name = props.item.propertyName
+  if(props.regionType===ItemTypes.OTHERMODEL){
+    name = props.item.propertyName + "_" + props.item.regionId
+  }
+  const dataList = props.relation[name]
   if(dataList===undefined||dataList===null){
     return
   }
@@ -112,21 +116,30 @@ function dropFunc(obj){
     deleteItem()
   }
   droppedObj.value = obj
-  if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType!==ItemTypes.){
-    calculateStore.setRelationsForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.item.regionId)
-    addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId)
+  console.log("fucku",props.regionType,obj.info.regionType)
+  if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType!==ItemTypes.OTHERMODEL){
+    calculateStore.setRelationsForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.item.regionId,props.regionType)
+    addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
+  }else if(props.regionType!==ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    // 这种情况是一个othermodel提供值给一个非othermodel
+    calculateStore.setRelationsForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,obj.info.regionId,props.regionType)
+    // addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionId,obj.info.regionType)
+    addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
   }else{
     // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
-    calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName)
-    addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName)
+    calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
+    addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
   }
 }
 
 function deleteItem(){
   // 删去拖拽源与放置目标的记录
-  if(props.regionType===ItemTypes.OTHERMODEL){
+  if(props.regionType===ItemTypes.OTHERMODEL&&droppedObj.value.info.regionType!==ItemTypes.OTHERMODEL){
     calculateStore.removeRelationsForOtherModel(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.id,props.item.propertyName,props.item.regionId)
     removeRelationForOtherModel(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.item.propertyName,props.item.regionId)
+  }else if(props.regionType!==ItemTypes.OTHERMODEL&&droppedObj.value.info.regionType===ItemTypes.OTHERMODEL){
+    calculateStore.removeRelationsForOtherModel(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.id,props.item.propertyName,droppedObj.value.objectId)
+    removeRelationForOtherModel(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.item.propertyName,droppedObj.value.objectId)
   }else{
     calculateStore.removeRelations(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.id,props.item.propertyName)
     removeRelation(droppedObj.value.objectId,droppedObj.value.info.propertyName,props.item.propertyName)
@@ -150,7 +163,7 @@ function onClickOutside(){
   calculateStore.sourceObj = undefined
 }
 
-function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName){
+function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,sourceRegionType){
   if(props.provider.relationIn===undefined||props.provider.relationIn===null){
     props.provider.relationIn = {}
   }
@@ -158,7 +171,7 @@ function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyNa
     props.provider.relationIn[targetPropertyName] = []
   }
   props.provider.relationIn[targetPropertyName].push({
-    sourceObjId,sourcePropertyName,sourceLabel
+    sourceObjId,sourcePropertyName,sourceLabel,sourceRegionType
   })
 }
 
@@ -178,7 +191,7 @@ function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
   }
 }
 
-function addRelationForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,targetRealRegionId){
+function addRelationForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,targetRealRegionId,sourceRegionType){
   if(props.provider.relationIn===undefined||props.provider.relationIn===null){
     props.provider.relationIn = {}
   }
@@ -187,17 +200,15 @@ function addRelationForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,tar
     props.provider.relationIn[key] = []
   }
   props.provider.relationIn[key].push({
-    sourceObjId,sourcePropertyName,sourceLabel
+    sourceObjId,sourcePropertyName,sourceLabel,sourceRegionType
   })
 }
 
 function removeRelationForOtherModel(sourceObjId,sourcePropertyName,targetPropertyName,targetRealRegionId){
   if(props.provider.relationIn!==undefined){
     const key = targetPropertyName+"_"+targetRealRegionId
-    alert(key)
     if(props.provider.relationIn[key]!==undefined){
       const list = props.provider.relationIn[key]
-      alert(321)
       const newList = list.filter(item=>{
         return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
       })

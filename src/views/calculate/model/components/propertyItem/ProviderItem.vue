@@ -58,7 +58,7 @@ function setForeign(){
 }
 
 const rotateFlag = computed(()=>{
-  console.log("item",props.item)
+  console.log('fuckitem',props.regionType)
   if(calculateStore.sourceObj=== undefined){
     return false
   }
@@ -70,7 +70,11 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
 	item: ()=>({
     //应该传入所属对象的id
         objectId: props.id,
-        info: props.item
+        info: {
+          ...props.item,
+          regionId:props.id,
+          regionType:props.regionType
+        }
     }),
     collect: monitor => ({
         dragging: monitor.isDragging()

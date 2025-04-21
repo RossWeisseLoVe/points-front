@@ -39,7 +39,6 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
     const { id: droppedId, originalIndex } = item
     const didDrop = monitor.didDrop()
     const result = monitor.getDropResult()
-    console.log("cnm",result)
     if (result === null) {
       calculateStore.callMethod("deleteItem-provider",droppedId)
       calculateStore.callMethod("deleteItem-reciver",droppedId)

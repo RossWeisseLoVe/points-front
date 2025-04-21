@@ -64,7 +64,7 @@ export const useCalculateStore = defineStore('calculate',{
         console.warn(`Method ${methodName} not found in sharedMethods`);
       }
     },
-    setRelations(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel){
+    setRelations(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel,targetRegionType){
       //给拖拽源设置目标关系，给放置目标设置来源关系通过父子组件传值来做，提高效率
       const source = this.getSourceObj(sourceObjId)
       if(source.relationOut===undefined||source.relationOut===null){
@@ -74,7 +74,7 @@ export const useCalculateStore = defineStore('calculate',{
         source.relationOut[sourcePropertyName] = []
       }
       source.relationOut[sourcePropertyName].push({
-        targetObjId,targetPropertyName,targetLabel
+        targetObjId,targetPropertyName,targetLabel,targetRegionType
       })
     },
     removeRelations(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName){
@@ -93,7 +93,7 @@ export const useCalculateStore = defineStore('calculate',{
         }
       }
     },
-    setRelationsForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel,sourceRealRegionId){
+    setRelationsForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel,sourceRealRegionId,targetRegionType){
       const key = sourcePropertyName+"_"+sourceRealRegionId
       const source = this.getSourceObj(sourceObjId)
       if(source.relationOut===undefined||source.relationOut===null){
@@ -103,7 +103,7 @@ export const useCalculateStore = defineStore('calculate',{
         source.relationOut[key] = []
       }
       source.relationOut[key].push({
-        targetObjId,targetPropertyName,targetLabel
+        targetObjId,targetPropertyName,targetLabel,targetRegionType
       })
     },
     removeRelationsForOtherModel(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName,sourceRealRegionId){
@@ -192,7 +192,6 @@ export const useCalculateStore = defineStore('calculate',{
           })
       }
       console.log("ssssssss",regionList)
-      return
       const res = await saveModel({
         template:regionList,
         id: this.modelId,
