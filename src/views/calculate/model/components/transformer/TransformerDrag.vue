@@ -11,7 +11,7 @@
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
             <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
-            <ReciverItem v-else :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ReciverItem v-else :item="item" :id="provider.id" :provider="provider" :relation="provider.relationIn" :regionType="provider.info.type"/>
           </div>
         </div>
       </template>
@@ -24,7 +24,7 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" :provider="provider" :relation="provider.relationIn" :regionType="provider.info.type"/>
             <ProviderItem v-else-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
           </div>
         </div>
@@ -41,7 +41,12 @@
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
             <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
-            <ReciverItem v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ReciverItem 
+            v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" 
+            :item="item" :id="provider.id"
+            :provider="provider"
+            :relation="provider.relationIn" 
+            :regionType="provider.info.type"/>
             <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
           </div>
         </div>
@@ -153,6 +158,8 @@ function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
     }
   }
 }
+
+
 
 const { isDragging } = toRefs(collect)
 const opacity = computed(() => (unref(isDragging) ? 0 : 1))

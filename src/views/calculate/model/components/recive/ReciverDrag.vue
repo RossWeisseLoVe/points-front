@@ -10,7 +10,14 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <ReciverItem v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id"  @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <ReciverItem 
+            v-if="item.inputOrOutput === 'input'" 
+            :item="item" 
+            :id="provider.id"  
+            :provider="provider"
+            :relation="provider.relationIn" 
+            :regionType="provider.info.type"
+            />
           </div>
         </div>
       </template>
@@ -106,34 +113,6 @@ return result
 
 const { isDragging } = toRefs(collect)
 const opacity = computed(() => (unref(isDragging) ? 0 : 1))
-
-function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName){
-  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
-    props.provider.relationIn = {}
-  }
-  if(props.provider.relationIn[targetPropertyName]===undefined){
-    props.provider.relationIn[targetPropertyName] = []
-  }
-  props.provider.relationIn[targetPropertyName].push({
-    sourceObjId,sourcePropertyName,sourceLabel
-  })
-}
-
-function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
-  if(props.provider.relationIn!==undefined){
-    if(props.provider.relationIn[targetPropertyName]!==undefined){
-      const list = props.provider.relationIn[targetPropertyName]
-      const newList = list.filter(item=>{
-        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
-      })
-      if(newList.length===0){
-        delete props.provider.relationIn[targetPropertyName]
-      }else{
-        props.provider.relationIn[targetPropertyName] = newList
-      }
-    }
-  }
-}
 
 </script>
 <style scoped lang="less">

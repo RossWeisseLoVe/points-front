@@ -93,6 +93,36 @@ export const useCalculateStore = defineStore('calculate',{
         }
       }
     },
+    setRelationsForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel,sourceRealRegionId){
+      const key = sourcePropertyName+"_"+sourceRealRegionId
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut===undefined||source.relationOut===null){
+        source.relationOut = {}
+      }
+      if(source.relationOut[key]===undefined){
+        source.relationOut[key] = []
+      }
+      source.relationOut[key].push({
+        targetObjId,targetPropertyName,targetLabel
+      })
+    },
+    removeRelationsForOtherModel(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName,sourceRealRegionId){
+      const key = sourcePropertyName+"_"+sourceRealRegionId
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut!==undefined){
+        if(source.relationOut[key]!==undefined){
+          const list = source.relationOut[key]
+          const newList = list.filter(item=>{
+            return !(item.targetObjId === targetObjId && item.targetPropertyName === targetPropertyName)
+          })
+          if(newList.length===0){
+            delete source.relationOut[key]
+          }else{
+            source.relationOut[key] = newList
+          }
+        }
+      }
+    },
     getSourceObj(id){
       for (const item of this.providerList) {
         if(item.id === id){
@@ -161,6 +191,8 @@ export const useCalculateStore = defineStore('calculate',{
             type:'reciver'
           })
       }
+      console.log("ssssssss",regionList)
+      return
       const res = await saveModel({
         template:regionList,
         id: this.modelId,
