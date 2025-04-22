@@ -72,7 +72,7 @@ const [collectedProps, dragSource, dragPreview] = useDrag(() => ({
         objectId: props.id,
         info: {
           ...props.item,
-          regionId:props.id,
+          // regionId:props.id,
           regionType:props.regionType
         }
     }),
