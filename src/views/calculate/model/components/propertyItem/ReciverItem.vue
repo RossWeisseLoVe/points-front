@@ -125,10 +125,15 @@ function dropFunc(obj){
     calculateStore.setRelationsForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,obj.info.regionId,props.regionType)
     // addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionId,obj.info.regionType)
     addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
+  }else if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    // 这种情况是一个othermodel提供值给另一个othermodel
+    calculateStore.setRelationsForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.regionId,props.item.propertyName,props.item.formItemName,obj.info.regionId,props.regionType)
+    // addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionId,obj.info.regionType)
+    addRelationForOtherModel(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
   }else{
     // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
     calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
-    addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
+    addRelation(obj.info.regionId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
   }
 }
 
