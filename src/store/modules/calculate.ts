@@ -93,8 +93,39 @@ export const useCalculateStore = defineStore('calculate',{
         }
       }
     },
-    setRelationsForOtherModel(sourceObjId,sourcePropertyName,sourceLabel,targetObjId,targetPropertyName,targetLabel,sourceRealRegionId,targetRegionType){
-      const key = sourcePropertyName+"_"+sourceRealRegionId
+    //普通region给othermodel赋值
+    setRelationsU2O(sourceObjId,sourcePropertyName,targetObjId,targetFatherRegionId,targetPropertyName,targetLabel,targetRegionType){
+      const key = sourcePropertyName
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut===undefined||source.relationOut===null){
+        source.relationOut = {}
+      }
+      if(source.relationOut[key]===undefined){
+        source.relationOut[key] = []
+      }
+      source.relationOut[key].push({
+        targetObjId,targetFatherRegionId,targetPropertyName,targetLabel,targetRegionType
+      })
+    },
+    removeRelationsU2O(sourceObjId,sourcePropertyName,targetObjId,targetFatherRegionId,targetPropertyName){
+      const key = sourcePropertyName
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut!==undefined){
+        if(source.relationOut[key]!==undefined){
+          const list = source.relationOut[key]
+          const newList = list.filter(item=>{
+            return !(item.targetObjId === targetObjId && item.targetPropertyName === targetPropertyName&&item.targetFatherRegionId===targetFatherRegionId)
+          })
+          if(newList.length===0){
+            delete source.relationOut[key]
+          }else{
+            source.relationOut[key] = newList
+          }
+        }
+      }
+    },
+    setRelationsO2U(sourceObjId,realsourceObjId,sourcePropertyName,targetObjId,targetPropertyName,targetLabel,targetRegionType){
+      const key = sourcePropertyName+"_"+realsourceObjId
       const source = this.getSourceObj(sourceObjId)
       if(source.relationOut===undefined||source.relationOut===null){
         source.relationOut = {}
@@ -106,14 +137,44 @@ export const useCalculateStore = defineStore('calculate',{
         targetObjId,targetPropertyName,targetLabel,targetRegionType
       })
     },
-    removeRelationsForOtherModel(sourceObjId,sourcePropertyName,targetObjId,targetPropertyName,sourceRealRegionId){
-      const key = sourcePropertyName+"_"+sourceRealRegionId
+    removeRelationsO2U(sourceObjId,realsourceObjId,sourcePropertyName,targetObjId,targetPropertyName){
+      const key = sourcePropertyName+"_"+realsourceObjId
       const source = this.getSourceObj(sourceObjId)
       if(source.relationOut!==undefined){
         if(source.relationOut[key]!==undefined){
           const list = source.relationOut[key]
           const newList = list.filter(item=>{
             return !(item.targetObjId === targetObjId && item.targetPropertyName === targetPropertyName)
+          })
+          if(newList.length===0){
+            delete source.relationOut[key]
+          }else{
+            source.relationOut[key] = newList
+          }
+        }
+      }
+    },
+    setRelationsO2O(sourceObjId,realsourceObjId,sourcePropertyName,targetObjId,targetFatherRegionId,targetPropertyName,targetLabel,targetRegionType){
+      const key = sourcePropertyName+"_"+realsourceObjId
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut===undefined||source.relationOut===null){
+        source.relationOut = {}
+      }
+      if(source.relationOut[key]===undefined){
+        source.relationOut[key] = []
+      }
+      source.relationOut[key].push({
+        targetObjId,targetFatherRegionId,targetPropertyName,targetLabel,targetRegionType
+      })
+    },
+    removeRelationsO2O(sourceObjId,realsourceObjId,sourcePropertyName,targetObjId,targetFatherRegionId,targetPropertyName){
+      const key = sourcePropertyName+"_"+realsourceObjId
+      const source = this.getSourceObj(sourceObjId)
+      if(source.relationOut!==undefined){
+        if(source.relationOut[key]!==undefined){
+          const list = source.relationOut[key]
+          const newList = list.filter(item=>{
+            return !(item.targetObjId === targetObjId && item.targetPropertyName === targetPropertyName&&item.targetFatherRegionId===targetFatherRegionId)
           })
           if(newList.length===0){
             delete source.relationOut[key]
