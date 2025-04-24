@@ -91,7 +91,7 @@
       item.className = item.info.className
       item.description = item.info.description
       item.properties = item.info.properties
-      delete item.info
+      // delete item.info
     }
     modelData.value = res
   })

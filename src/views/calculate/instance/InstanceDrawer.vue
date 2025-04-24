@@ -7,6 +7,11 @@
       @ok="handleSubmit"
     >
       <BasicTable @register="registerTable" class="">
+        <template #status="{record}">
+          <Tag color="#2db7f5" v-if="record.info.type===ItemTypes.BOX">计算域</Tag>
+          <Tag color="#f56a00" v-else-if="record.info.type===ItemTypes.AGGREGATORS">聚合器</Tag>
+          <Tag color="#ffc53d" v-else-if="record.info.type===ItemTypes.OTHERMODEL">子计算空间</Tag>
+        </template>
         <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <TableAction
@@ -15,6 +20,7 @@
                 tooltip: '使用计算域',
                 icon: 'ant-design:caret-right-outlined',
                 onClick: handleUseRegion.bind(null, record),
+                ifShow: record.info.type!=='othermodel'
                 // auth: 'Calculate:'+PerEnum.QUERY,
               },
             ]"
@@ -33,6 +39,8 @@
     import { ref } from "vue"
     import RegionModal from "./RegionModal.vue"
     import { useModal } from '@/components/Modal';
+    import { Tag } from "ant-design-vue"
+    import { ItemTypes } from "../model/data"
 
     defineOptions({ name: 'MenuDrawer' });
   

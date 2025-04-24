@@ -249,7 +249,7 @@ export const instanceRegionColumns = [
   },
   {
     title: '类型',
-    dataIndex: 'type',
+    slots: { customRender: 'status' },
     width: 100,
     align: 'left',
   },
