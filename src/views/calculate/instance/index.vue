@@ -8,6 +8,10 @@
             <Button type="primary" @click="handleCreateInstance"> 新建计算空间</Button>
           </Authority>
         </template>
+        <template #type="{record}">
+          <Tag color="#2db7f5" v-if="record.type==='othermodel'">嵌套计算空间</Tag>
+          <Tag color="#f56a00" v-else-if="record.type==='independent'">独立计算空间</Tag>
+        </template>
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
             <TableAction
@@ -40,15 +44,13 @@
   // import TypeList from '@/views/components/leftTree/TypeList.vue';
   import { getInstancePageByModelId,getModelById } from "@/api/calculate/calculate"
   import { useModal } from '@/components/Modal';
-  import { dictionaryItemPageList } from '@/api/base/dictionary';
   import { instanceColumns, searchFormSchema } from './instance.data';
-  import { useMessage } from '@/hooks/web/useMessage';
   import { PerEnum } from '@/enums/perEnum';
   import { useGo } from '@/hooks/web/usePage';
   import { useRoute } from 'vue-router' 
   import InstanceDrawer from './InstanceDrawer.vue';
   import { useDrawer } from '@/components/Drawer';
-  import { Button } from "ant-design-vue"
+  import { Button,Tag } from "ant-design-vue"
   import InstanceInfoModal from './InstanceInfoModal.vue';
 
   const route = useRoute()
