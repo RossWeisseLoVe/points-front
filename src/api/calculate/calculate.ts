@@ -63,7 +63,7 @@ export const getModelById = (id) =>
 export const newInstance = (params) =>
   defHttp.post({url: Api.NewInstance,params});
 
-export const getInstancePageByModelId = (params) => {
+export const getInstancePageByModelId =async (params) => {
   const query = {
     pageSize: params.pageSize,
     pageNum: params.pageNum
@@ -74,8 +74,21 @@ export const getInstancePageByModelId = (params) => {
     query,
     entity: params
   } 
-  const result = defHttp.post({url: Api.GetInstancePageByModelId, params: param});
+  const result =await defHttp.post({url: Api.GetInstancePageByModelId, params: param});
+  for (const item of result) {
+    deleteNullChildren(item)
+  }
   return result;
+}
+
+function deleteNullChildren(data){
+  if(data.children.length===0){
+    delete data.children
+  }else{
+    for (const item of data.children) {
+      deleteNullChildren(item)
+    }
+  }
 }
 
 export const getRegionInstanceModelListById = (id) =>
