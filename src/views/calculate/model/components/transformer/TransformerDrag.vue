@@ -40,7 +40,7 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :regionType="provider.info.type"/>
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :provider="provider" :regionType="provider.info.type"/>
             <ReciverItem 
             v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" 
             :item="item" :id="provider.id"

@@ -23,7 +23,7 @@
 <script lang="ts" setup>
   import { ref, computed, unref,reactive } from 'vue';
   import { Form,FormItem,Input,InputNumber,message,Radio ,Select } from "ant-design-vue"
-  import { getRegionInstanceByRegionIdAndInstanceId } from "@/api/calculate/calculate"
+  import { getRegionInstanceById } from "@/api/calculate/calculate"
   import { getResult,executeRegion } from '@/api/calculate/calculate'
   import { BasicModal, useModalInner } from '@/components/Modal';
       const RadioGroup = Radio.Group
@@ -31,7 +31,6 @@
       const typeName = ref("")
       const instanceId = ref(undefined)
       const regionId = ref(undefined)
-      const modelId = ref(undefined)
       const regionInstanceId = ref(undefined)
       const formData = ref({})
       const autoInputList = ref([])
@@ -41,24 +40,21 @@
         'Select': Select,
         'Radio': RadioGroup ,
       };
+      const record = ref({})
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
-        const res = await getRegionInstanceByRegionIdAndInstanceId({
-          regionId: data.regionId,
-          instanceId: data.instanceId
-        })
+        const instance = data.instance
+        record.value = data.instance
+        const res = await getRegionInstanceById({regionInstanceId:instance.id})
         if(res.relationIn!==undefined&&res.relationIn!==null){
           autoInputList.value = Object.keys(res.relationIn)
         }
         formData.value = res.data
         setModalProps({ confirmLoading: false });
-        instanceId.value = data.instanceId
-        typeName.value = data.typeName
-        regionId.value = data.regionId
-        modelId.value = data.modelId
-        regionInstanceId.value = res.id
+        // instanceId.value = data.instanceId
+        // typeName.value = data.typeName
+        // regionId.value = data.regionId
         //当前计算域实例信息与数据
-        console.log('ffffff',res)
-        for (const field of data.data) {
+        for (const field of res.properties) {
           if (!(field.propertyName in formData.value)) {
             formData.value[field.propertyName] = getDefaultValue(field.propertyType);
           }
@@ -87,7 +83,7 @@
               field.options = option
             }
         }
-        fields.value = data.data
+        fields.value = instance.properties
       });
 
       function getDisplayed(field){
@@ -133,13 +129,8 @@
       function handleReset(open){
         if(open){
           fields.value = {}
-          typeName.value = ""
-          instanceId.value = undefined
-          instanceId.value = undefined
-          regionId.value = undefined
-          modelId.value = undefined
-          regionInstanceId.value = undefined
           formData.value = {}
+          record.value = {}
           autoInputList.value = []
         }
       }
@@ -164,18 +155,11 @@
       };
 
       async function handleSubmit() {
-        // const res = await getResult({
-        //   param: formData.value,
-        //   typeName:typeName.value
-        // })
-        // formData.value = res
-        // console.log("ffffffffffff",res)
         const res = await executeRegion({
-          typeName: typeName.value,
-          modelId: modelId.value,   //模型Id
-          regionId: regionId.value, //模型中的计算域Id
-          instanceId: instanceId.value, //实例Id
-          regionInstanceId: regionInstanceId.value,  //实例中的计算域Id
+          typeName: record.value.className,
+          regionId: record.value.regionId, //模型中的计算域Id
+          instanceId: record.value.instanceId, //实例Id
+          regionInstanceId:record.value.id,
           param:formData.value
         })
         if(res===null){

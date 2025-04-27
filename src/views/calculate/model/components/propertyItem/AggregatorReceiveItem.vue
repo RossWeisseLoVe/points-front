@@ -27,9 +27,9 @@
   import {
     DeleteTwoTone
   } from '@ant-design/icons-vue';
-import { object } from 'vue-types';
+  import { object } from 'vue-types';
   import { message,Dropdown,Menu,MenuItem,Tag } from "ant-design-vue"
-import { ItemTypes } from '../../data';
+  import { ItemTypes } from '../../data';
   
   const droppedList:any = ref([])
   // const droppedObj = ref({})
@@ -37,6 +37,7 @@ import { ItemTypes } from '../../data';
   
   const props = defineProps({
     item: Object,
+    provider: Object,
     id:String,
     relation: Object,
     regionType:String
@@ -115,22 +116,171 @@ import { ItemTypes } from '../../data';
     },
   }))
   
-  function dropFunc(obj){
-    droppedList.value.push(obj)
-    // // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
-    calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName)
-    emits('addRelation',obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName)
+// 以下代码用于处理relation
+
+function dropFunc(obj){
+  //props.item 是目标属性item
+  //obj.info 是来源属性item
+  console.log("fucku",obj)
+  console.log("fuckm",props.item)
+  droppedList.value.push(obj)
+  if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType!==ItemTypes.OTHERMODEL){
+    // 这种情况是一个非othermodel提供值给一个othermodel
+    calculateStore.setRelationsU2O(obj.objectId,obj.info.propertyName,props.item.regionId,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
+    addRelationU2O(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
+  }else if(props.regionType!==ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    // 这种情况是一个othermodel提供值给一个非othermodel
+    calculateStore.setRelationsO2U(obj.objectId,obj.info.regionId,obj.info.propertyName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
+    addRelationO2U(obj.info.regionId,obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
+  }else if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    // 这种情况是一个othermodel提供值给另一个othermodel
+    calculateStore.setRelationsO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,props.item.regionId,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
+    addRelationO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
+  }else{
+    // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
+    calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
+    addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
   }
-  
-  function deleteItem(item){
-    // 删去拖拽源与放置目标的记录
-    calculateStore.removeRelations(item.objectId,item.info.propertyName,props.id,props.item.propertyName)
-    emits('removeRelation',item.objectId,item.info.propertyName,props.item.propertyName)
-    droppedList.value = droppedList.value.filter(i=>{
-      return i.objectId!==item.objectId
-    })
+}
+
+function deleteItem(obj){
+  // 删去拖拽源与放置目标的记录
+  console.log("fuckItem",obj)
+  if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType!==ItemTypes.OTHERMODEL){
+    calculateStore.removeRelationsU2O(obj.objectId,obj.info.propertyName,props.item.regionId,props.id,props.item.propertyName)
+    removeRelationU2O(obj.objectId,obj.info.propertyName,props.item.propertyName,props.item.regionId)
+  }else if(props.regionType!==ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    calculateStore.removeRelationsO2U(obj.objectId,obj.info.regionId,obj.info.propertyName,props.id,props.item.propertyName)
+    removeRelationO2U(obj.objectId,obj.info.regionId,obj.info.propertyName,props.item.propertyName)
+  }else if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
+    calculateStore.removeRelationsO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,props.item.regionId,props.id,props.item.propertyName)
+    removeRelationO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,props.item.propertyName,props.item.regionId)
+  }else{
+    calculateStore.removeRelations(obj.objectId,obj.info.propertyName,props.id,props.item.propertyName)
+    removeRelation(obj.objectId,obj.info.propertyName,props.item.propertyName)
   }
-  
+  droppedList.value = droppedList.value.filter(i=>{
+    return i.objectId!==obj.objectId
+  })
+}
+
+function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,sourceRegionType){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
+    props.provider.relationIn = {}
+  }
+  if(props.provider.relationIn[targetPropertyName]===undefined){
+    props.provider.relationIn[targetPropertyName] = []
+  }
+  props.provider.relationIn[targetPropertyName].push({
+    sourceObjId,sourcePropertyName,sourceLabel,sourceRegionType
+  })
+}
+
+function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
+  if(props.provider.relationIn!==undefined){
+    if(props.provider.relationIn[targetPropertyName]!==undefined){
+      const list = props.provider.relationIn[targetPropertyName]
+      const newList = list.filter(item=>{
+        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
+      })
+      if(newList.length===0){
+        delete props.provider.relationIn[targetPropertyName]
+      }else{
+        props.provider.relationIn[targetPropertyName] = newList
+      }
+    }
+  }
+}
+
+function addRelationU2O(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,targetRealRegionId,sourceRegionType){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
+    props.provider.relationIn = {}
+  }
+  const key = targetPropertyName+"_"+targetRealRegionId
+  if(props.provider.relationIn[key]===undefined){
+    props.provider.relationIn[key] = []
+  }
+  props.provider.relationIn[key].push({
+    sourceObjId,sourcePropertyName,sourceLabel,sourceRegionType
+  })
+}
+
+function removeRelationU2O(sourceObjId,sourcePropertyName,targetPropertyName,targetRealRegionId){
+  if(props.provider.relationIn!==undefined){
+    const key = targetPropertyName+"_"+targetRealRegionId
+    if(props.provider.relationIn[key]!==undefined){
+      const list = props.provider.relationIn[key]
+      const newList = list.filter(item=>{
+        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
+      })
+      if(newList.length===0){
+        delete props.provider.relationIn[key]
+      }else{
+        props.provider.relationIn[key] = newList
+      }
+    }
+  }
+}
+
+function addRelationO2U(sourceObjId,sourceFatherRegionId,sourcePropertyName,sourceLabel,targetPropertyName,sourceRegionType){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
+    props.provider.relationIn = {}
+  }
+  const key = targetPropertyName
+  if(props.provider.relationIn[key]===undefined){
+    props.provider.relationIn[key] = []
+  }
+  props.provider.relationIn[key].push({
+    sourceObjId,sourceFatherRegionId,sourcePropertyName,sourceLabel,sourceRegionType
+  })
+}
+
+function removeRelationO2U(sourceObjId,sourceFatherRegionId,sourcePropertyName,targetPropertyName){
+  if(props.provider.relationIn!==undefined){
+    const key = targetPropertyName
+    if(props.provider.relationIn[key]!==undefined){
+      const list = props.provider.relationIn[key]
+      const newList = list.filter(item=>{
+        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName &&item.sourceFatherRegionId === sourceFatherRegionId)
+      })
+      if(newList.length===0){
+        delete props.provider.relationIn[key]
+      }else{
+        props.provider.relationIn[key] = newList
+      }
+    }
+  }
+}
+
+function addRelationO2O(sourceObjId,sourceRealRegionId,sourcePropertyName,sourceLabel,targetPropertyName,targetObjId,sourceRegionType){
+  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
+    props.provider.relationIn = {}
+  }
+  const key = targetPropertyName+"_"+targetObjId
+  if(props.provider.relationIn[key]===undefined){
+    props.provider.relationIn[key] = []
+  }
+  props.provider.relationIn[key].push({
+    sourceObjId,sourceRealRegionId,sourcePropertyName,sourceLabel,sourceRegionType
+  })
+}
+
+function removeRelationO2O(sourceObjId,sourceRealRegionId,sourcePropertyName,targetPropertyName,targetObjId){
+  if(props.provider.relationIn!==undefined){
+    const key = targetPropertyName+"_"+targetObjId
+    if(props.provider.relationIn[key]!==undefined){
+      const list = props.provider.relationIn[key]
+      const newList = list.filter(item=>{
+        return !(item.sourceObjId === sourceObjId && item.sourceRealRegionId===sourceRealRegionId && item.sourcePropertyName === sourcePropertyName)
+      })
+      if(newList.length===0){
+        delete props.provider.relationIn[key]
+      }else{
+        props.provider.relationIn[key] = newList
+      }
+    }
+  }
+}
   
   const rotateFlag = computed(()=>{
     if(calculateStore.sourceObj=== undefined||clickedObj.value.objectId === undefined){

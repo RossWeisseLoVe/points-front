@@ -8,9 +8,9 @@
     >
       <BasicTable @register="registerTable" class="">
         <template #status="{record}">
-          <Tag color="#2db7f5" v-if="record.info.type===ItemTypes.BOX">计算域</Tag>
-          <Tag color="#f56a00" v-else-if="record.info.type===ItemTypes.AGGREGATORS">聚合器</Tag>
-          <Tag color="#ffc53d" v-else-if="record.info.type===ItemTypes.OTHERMODEL">子计算空间</Tag>
+          <Tag color="#2db7f5" v-if="record.type===ItemTypes.BOX">计算域</Tag>
+          <Tag color="#f56a00" v-else-if="record.type===ItemTypes.AGGREGATORS">聚合器</Tag>
+          <Tag color="#ffc53d" v-else-if="record.type===ItemTypes.OTHERMODEL">子计算空间</Tag>
         </template>
         <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -20,7 +20,7 @@
                 tooltip: '使用计算域',
                 icon: 'ant-design:caret-right-outlined',
                 onClick: handleUseRegion.bind(null, record),
-                ifShow: record.info.type!=='othermodel'
+                ifShow: record.type!=='othermodel'
                 // auth: 'Calculate:'+PerEnum.QUERY,
               },
             ]"
@@ -73,25 +73,20 @@
         },
     });  
   
-    const instanceId = ref(undefined)
     const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
       setDrawerProps({ confirmLoading: false });
       // 获取到实例数据，要和模板数据融合在一起
-      instanceId.value = data.id
-      console.log("fuckmodel",data.model)
-      dataList.value = data.model.template
-      setTableData(data.model.template)
+      const res = await getRegionInstanceModelListById(data.id)
+      console.log("res:",res)
+      dataList.value = res
+      setTableData(res)
       redoHeight()
     });
 
     function handleUseRegion(record){
         console.log(record)
         openModal(true,{
-            data: record.properties,
-            typeName: record.className,
-            regionId: record.id,
-            modelId: record.modelId,
-            instanceId: instanceId.value
+            instance:record
         })
     }
 

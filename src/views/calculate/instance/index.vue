@@ -107,8 +107,7 @@
         onClose:closeDrawer
     })
     openDrawer(true,{
-        id:record.id,
-        model: modelData.value
+        id:record.id
     }as any)
   }
 
