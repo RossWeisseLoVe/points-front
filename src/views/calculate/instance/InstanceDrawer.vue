@@ -8,6 +8,7 @@
     >
       <BasicTable @register="registerTable" class="">
         <template #status="{record}">
+          <Tag color="#000000" :style="{marginRight:'2px'}" v-if="getIsAnyTime(record)">即时</Tag>
           <Tag color="#2db7f5" v-if="record.type===ItemTypes.BOX">计算域</Tag>
           <Tag color="#f56a00" v-else-if="record.type===ItemTypes.AGGREGATORS">聚合器</Tag>
           <Tag color="#ffc53d" v-else-if="record.type===ItemTypes.OTHERMODEL">子计算空间</Tag>
@@ -23,12 +24,20 @@
                 ifShow: record.type!=='othermodel'
                 // auth: 'Calculate:'+PerEnum.QUERY,
               },
+              {
+                tooltip: '添加幽灵实例',
+                icon: 'ant-design:plus-circle-outlined',
+                onClick: handleAddGhost.bind(null, record),
+                ifShow: getIsAnyTime(record)
+                // auth: 'Calculate:'+PerEnum.QUERY,
+              },
             ]"
           />
         </template>
       </template>
       </BasicTable>
       <RegionModal @register="registerModal"/>
+      <GhostModal @register="registerGhostModal"/>
     </BasicDrawer>
   </template>
   <script lang="ts" setup>
@@ -38,6 +47,7 @@
     import { instanceRegionColumns } from '../calculate.data';
     import { ref } from "vue"
     import RegionModal from "./RegionModal.vue"
+    import GhostModal from "./GhostModal.vue"
     import { useModal } from '@/components/Modal';
     import { Tag } from "ant-design-vue"
     import { ItemTypes } from "../model/data"
@@ -47,6 +57,7 @@
     const dataList = ref([])
     const emit = defineEmits(['success', 'register']);
     const [registerModal, { openModal, setModalProps }] = useModal();
+    const [registerGhostModal, { openModal:openGhostModal, setModalProps:setGhostModalProps }] = useModal();
     const [registerTable, { reload,setTableData,redoHeight }] = useTable({
         title: ()=>{
           return '计算域 共'+dataList.value.length+"个"
@@ -100,6 +111,23 @@
         setDrawerProps({ confirmLoading: false });
       }
     }
+
+    function getIsAnyTime(record){
+      for (const item of record.properties) {
+        if(item.isAnyTime===1){
+          return true
+        }
+      }
+      return false
+    }
+
+    function handleAddGhost(record){
+      const regionIds = []
+      openGhostModal(true,{
+          regionIds
+      })
+    }
+
   </script>
 
   <style scoped>

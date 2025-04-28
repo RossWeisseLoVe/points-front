@@ -1,7 +1,7 @@
 <template>
 <Dropdown :trigger="['contextmenu']">
     <div :ref="drop" :class="isAnime ? 'anime provider-item' :'provider-item' ">
-        <Tag color="#cd201f" class="count-badge" size="small" v-if="item.isForeign===1&&regionType!==ItemTypes.OTHERMODEL">外</Tag>
+        <Tag color="#cd201f" class="count-badge" size="small" v-if="getTagInfo()!==undefined">{{ getTagInfo() }}</Tag>
         <div class="mb-1">{{ item.propertyName }}</div>
         <div :style="{fontSize:'12px'}">{{ item.formItemName }}</div>
         <div :class="rotateFlag&&item.objectId===clickedObj.objectId ? 'rotate-line':''" v-for="item in droppedList" :key="item.objectId">
@@ -15,6 +15,7 @@
     <template #overlay>
       <Menu v-if="regionType!==ItemTypes.OTHERMODEL">
         <MenuItem key="1" @click="setForeign">{{ item.isForeign === 1 ? "取消供外部使用" : "设置可供外部使用" }}</MenuItem>
+        <MenuItem key="2" @click="setAnyTime" >{{ item.isAnyTime === 1 ? "设置为普通聚合器":"设置为即时聚合器" }}</MenuItem>
       </Menu>
     </template>
   </Dropdown>
@@ -41,7 +42,7 @@
     id:String,
     relation: Object,
     regionType:String
-  })
+  } as any)
   
   function setForeign(){
     if(props.item.isForeign===1){
@@ -63,6 +64,49 @@
       }
       calculateStore.setForeignProperties(data)
 
+    }
+  }
+
+  function setAnyTime(){
+    let relationIn
+    if(props.regionType==="othermodel"){
+      relationIn = props.provider.relationIn[props.item.propertyName+"_"+props.item.regionId]
+    }else{
+      relationIn = props.provider.relationIn[props.item.propertyName]
+    }
+    if(props.item.isAnyTime===1){
+      props.item.isAnyTime=0
+      for (const item of relationIn) {
+        if(item.sourceRegionType==="othermodel"){
+          calculateStore.setSourceRegionGhost(item.sourceFatherRegionId,0)
+        }else{
+          calculateStore.setSourceRegionGhost(item.sourceObjId,0)
+        }
+      }
+    }else{
+      props.item.isAnyTime=1
+      for (const item of relationIn) {
+        if(item.sourceRegionType==="othermodel"){
+          calculateStore.setSourceRegionGhost(item.sourceFatherRegionId,1)
+        }else{
+          calculateStore.setSourceRegionGhost(item.sourceObjId,1)
+        }
+      }
+    }
+  }
+
+  function getTagInfo(){
+    const charList:Array<String>=[]
+    if(props.item.isAnyTime===1){
+      charList.push("即时")
+    }
+    if(props.item.isForeign===1&&props.regionType!==ItemTypes.OTHERMODEL){
+      charList.push("外")
+    }
+    if(charList.length===0){
+      return
+    }else{
+      return charList.join("/")
     }
   }
 
@@ -141,6 +185,10 @@ function dropFunc(obj){
     calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
     addRelation(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,obj.info.regionType)
   }
+  if(props.item.isAnyTime===1){
+    // 需要将sourceRegion设置为幽灵模式
+    calculateStore.setSourceRegionGhost(obj.objectId,1)
+  }
 }
 
 function deleteItem(obj){
@@ -162,6 +210,10 @@ function deleteItem(obj){
   droppedList.value = droppedList.value.filter(i=>{
     return i.objectId!==obj.objectId
   })
+  if(props.item.isAnyTime===1){
+    // 需要将sourceRegion设置为幽灵模式
+    calculateStore.setSourceRegionGhost(obj.objectId,0)
+  }
 }
 
 function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName,sourceRegionType){

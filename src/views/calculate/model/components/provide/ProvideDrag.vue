@@ -1,5 +1,6 @@
 <template>
     <div :ref="node => drag(drop(node))" class="provider-box" >
+      <Tag color="#000000" class="ghost-badge" size="small" v-if="provider.isGhost===1">幽灵</Tag>
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
       <div class="provider-header">
         <Avatar :style="{backgroundColor: getAvatarColor()}" size="small" class="class-avatar">
@@ -13,7 +14,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { Avatar,BadgeRibbon } from "ant-design-vue"
+import { Avatar,BadgeRibbon,Tag } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs,onMounted } from "vue"
 import ProviderItem from "../propertyItem/ProviderItem.vue"
@@ -123,6 +124,12 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   cursor:move;
   transition: background 0.3s;
+
+  .ghost-badge{
+    position: absolute;
+    top: 0px;
+    right: -4px;
+  }
   .remove-icon{
     position: absolute;
     top: 0;
@@ -132,6 +139,7 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s;
+    z-index: 9999;
   }
   &:hover{
     background: #f2f2f2;

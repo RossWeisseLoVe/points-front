@@ -213,7 +213,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
-            isAnyTime:item.isAnyTime,
+            isGhost:item.isGhost,
             type:'provider'
           })
       }
@@ -232,7 +232,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
-            isAnyTime:item.isAnyTime,
+            isGhost:item.isGhost,
             type:'transformer'
           })
       }
@@ -251,7 +251,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
-            isAnyTime:item.isAnyTime,
+            isGhost:item.isGhost,
             type:'reciver'
           })
       }
@@ -275,6 +275,10 @@ export const useCalculateStore = defineStore('calculate',{
       this.properties = this.properties.filter(data=>{
         return !(item.regionId===data.regionId&&item.id===data.id)
       })
+    },
+    setSourceRegionGhost(sourceObjId,status){
+      const source = this.getSourceObj(sourceObjId) as any
+      source.isGhost = status
     }
   },
 });

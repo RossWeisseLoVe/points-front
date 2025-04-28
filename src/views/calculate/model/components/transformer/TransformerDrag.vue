@@ -1,5 +1,6 @@
 <template>
     <div :ref="node => drag(drop(node))" class="provider-box" >
+      <Tag color="#000000" class="ghost-badge" size="small" v-if="provider.isGhost===1">幽灵</Tag>
       <DeleteTwoTone two-tone-color="#eb2f96" class="remove-icon" @click="deleteItem"/>
       <template v-if="provider.info.type===ItemTypes.BOX">
         <div class="provider-header">
@@ -17,19 +18,12 @@
         </div>
       </template>
       <template v-else-if="provider.info.type===ItemTypes.AGGREGATORS">
-      <Dropdown :trigger="['contextmenu']">
         <div class="provider-header">
           <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
             {{ getAvatar(provider) }}
           </Avatar>
           <div>{{ provider.info.description }}</div>
         </div>
-        <template #overlay>
-          <Menu>
-            <MenuItem key="1" @click="setAnyTime" >{{ provider.isAnytime===1 ? "设置为普通聚合器":"设置为即时聚合器" }}</MenuItem>
-          </Menu>
-        </template>
-      </Dropdown>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
             <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" :provider="provider" :relation="provider.relationIn" :regionType="provider.info.type"/>
@@ -62,7 +56,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { Avatar,Tooltip,Dropdown,Menu,MenuItem } from "ant-design-vue"
+import { Avatar,Tooltip,Dropdown,Menu,MenuItem,Tag } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
 import ProviderItem from "../propertyItem/ProviderItem.vue"
@@ -130,13 +124,7 @@ function deleteItem(){
   emits('deleteItem',props.id)
 }
 
-function setAnyTime(){
-  if(props.provider.isAnytime===1){
-    props.provider.isAnytime=0
-  }else{
-    props.provider.isAnytime=1
-  }
-}
+
 
 function getAvatar(item){
 const list = item.info.className.split(".")
@@ -168,6 +156,11 @@ const opacity = computed(() => (unref(isDragging) ? 0 : 1))
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
   cursor:move;
   transition: background 0.3s;
+  .ghost-badge{
+    position: absolute;
+    top: 0px;
+    right: -4px;
+  }
   .remove-icon{
     position: absolute;
     top: 0;
