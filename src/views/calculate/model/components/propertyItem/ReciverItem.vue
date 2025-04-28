@@ -1,6 +1,5 @@
 <template>
 <Dropdown :trigger="['contextmenu']">
-  
   <div :ref="drop" :class="isAnime ? 'anime provider-item' :'provider-item' ">
       <Tag color="#cd201f" class="count-badge" size="small" v-if="item.isForeign===1&&regionType!==ItemTypes.OTHERMODEL">外</Tag>
       <div class="mb-1">{{ item.propertyName }}</div>
@@ -13,7 +12,7 @@
         </div>
       </div>
   </div>
-  <template #overlay>
+    <template #overlay>
       <Menu v-if="regionType!==ItemTypes.OTHERMODEL">
         <MenuItem key="1" @click="setForeign">{{ item.isForeign === 1 ? "取消供外部使用" : "设置可供外部使用" }}</MenuItem>
       </Menu>

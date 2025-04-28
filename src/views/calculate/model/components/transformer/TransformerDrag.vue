@@ -8,6 +8,7 @@
           </Avatar>
           <div>{{ provider.info.description }}</div>
         </div>
+
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
             <ProviderItem v-if="item.inputOrOutput === 'output'" :item="item" :id="provider.id" :regionType="provider.info.type"/>
@@ -16,12 +17,19 @@
         </div>
       </template>
       <template v-else-if="provider.info.type===ItemTypes.AGGREGATORS">
+      <Dropdown :trigger="['contextmenu']">
         <div class="provider-header">
           <Avatar style="background-color: #f56a00" size="small" class="class-avatar">
             {{ getAvatar(provider) }}
           </Avatar>
           <div>{{ provider.info.description }}</div>
         </div>
+        <template #overlay>
+          <Menu>
+            <MenuItem key="1" @click="setAnyTime" >{{ provider.isAnytime===1 ? "设置为普通聚合器":"设置为即时聚合器" }}</MenuItem>
+          </Menu>
+        </template>
+      </Dropdown>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
             <AggregatorsReceive v-if="item.inputOrOutput === 'input'" :item="item" :id="provider.id" :provider="provider" :relation="provider.relationIn" :regionType="provider.info.type"/>
@@ -40,7 +48,7 @@
         </div>
         <div class="item-container">
           <div v-for="item in provider.info.properties" :key="item.id">
-            <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id" @addRelation="addRelation" @removeRelation="removeRelation" :relation="provider.relationIn" :provider="provider" :regionType="provider.info.type"/>
+            <AggregatorsReceive v-if="item.inputOrOutput === 'input'&&item.regionType===ItemTypes.AGGREGATORS" :item="item" :id="provider.id"  :relation="provider.relationIn" :provider="provider" :regionType="provider.info.type"/>
             <ReciverItem 
             v-if="item.inputOrOutput === 'input'&&item.regionType!==ItemTypes.AGGREGATORS" 
             :item="item" :id="provider.id"
@@ -54,7 +62,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { Avatar,Tooltip } from "ant-design-vue"
+import { Avatar,Tooltip,Dropdown,Menu,MenuItem } from "ant-design-vue"
 import { useDrag,useDrop } from 'vue3-dnd'
 import { ref,computed,toRefs } from "vue"
 import ProviderItem from "../propertyItem/ProviderItem.vue"
@@ -70,7 +78,7 @@ const props = defineProps({
   moveCard: Function,
   findCard: Function,
   insertCard: Function
-})
+} as any)
 
 
 const emits =defineEmits(['hoverIndex', 'deleteItem'])
@@ -122,6 +130,14 @@ function deleteItem(){
   emits('deleteItem',props.id)
 }
 
+function setAnyTime(){
+  if(props.provider.isAnytime===1){
+    props.provider.isAnytime=0
+  }else{
+    props.provider.isAnytime=1
+  }
+}
+
 function getAvatar(item){
 const list = item.info.className.split(".")
 const str = list[list.length-1]
@@ -129,34 +145,6 @@ const result = str.slice(0, 2).replace(/^(.)(.)?/, (_, c1, c2) =>
   c1.toUpperCase() + (c2 ? c2.toLowerCase() : '')
 );
 return result
-}
-
-function addRelation(sourceObjId,sourcePropertyName,sourceLabel,targetPropertyName){
-  if(props.provider.relationIn===undefined||props.provider.relationIn===null){
-    props.provider.relationIn = {}
-  }
-  if(props.provider.relationIn[targetPropertyName]===undefined){
-    props.provider.relationIn[targetPropertyName] = []
-  }
-  props.provider.relationIn[targetPropertyName].push({
-    sourceObjId,sourcePropertyName,sourceLabel
-  })
-}
-
-function removeRelation(sourceObjId,sourcePropertyName,targetPropertyName){
-  if(props.provider.relationIn!==undefined){
-    if(props.provider.relationIn[targetPropertyName]!==undefined){
-      const list = props.provider.relationIn[targetPropertyName]
-      const newList = list.filter(item=>{
-        return !(item.sourceObjId === sourceObjId && item.sourcePropertyName === sourcePropertyName)
-      })
-      if(newList.length===0){
-        delete props.provider.relationIn[targetPropertyName]
-      }else{
-        props.provider.relationIn[targetPropertyName] = newList
-      }
-    }
-  }
 }
 
 

@@ -213,6 +213,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
+            isAnyTime:item.isAnyTime,
             type:'provider'
           })
       }
@@ -231,6 +232,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
+            isAnyTime:item.isAnyTime,
             type:'transformer'
           })
       }
@@ -249,6 +251,7 @@ export const useCalculateStore = defineStore('calculate',{
             info,
             relationOut:item.relationOut,
             relationIn: item.relationIn,
+            isAnyTime:item.isAnyTime,
             type:'reciver'
           })
       }
