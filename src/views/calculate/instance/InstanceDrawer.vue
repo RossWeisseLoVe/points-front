@@ -122,9 +122,46 @@
     }
 
     function handleAddGhost(record){
-      const regionIds = []
+      const relationIn = record.relationIn
+      const keyList = Object.keys(relationIn)
+      const regionIds:Array<any> = []
+      for(const item of keyList){
+        const s = item.split("_")
+        let fid
+        if(s[0]==="list"){
+          if(s[1]){
+            fid = s[1]
+          }else{
+            fid = record.regionId
+          }
+          regionIds.push({
+              id:fid,
+              fid:null
+            })
+          for(const relation of relationIn[item]){
+            if(relation.sourceFatherRegionId){
+              regionIds.push({
+                fid,
+                id:relation.sourceFatherRegionId
+              })
+            }else{
+              regionIds.push({
+                fid,
+                id:relation.sourceObjId
+              })
+            }
+
+          }
+        }
+      }
+      setGhostModalProps({
+        title:"新增幽灵实例",
+        width:800,
+        minHeight:400
+      })
       openGhostModal(true,{
-          regionIds
+        regionIds,
+        instanceId:record.id
       })
     }
 

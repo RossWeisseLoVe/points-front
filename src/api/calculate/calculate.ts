@@ -15,7 +15,9 @@ enum Api {
     ExecuteRegion = '/flow/calculate/executeRegion',
     GetRegionInstanceById = '/flow/calculate/getRegionInstanceById',
     UpdateInstance = '/flow/calculate/updateInstance',
-    GetAllModels = "/flow/calculate/getAllModels"
+    GetAllModels = "/flow/calculate/getAllModels",
+    GetRegionsByIds = "/flow/calculate/getRegionsByIds",
+    SetGhostInstance = "/flow/calculate/setGhostInstance"
 }
 
 export const getAllModels = () =>
@@ -100,4 +102,10 @@ export const getRegionInstanceById = (params) =>
 
 export const updateInstance = (params) =>
   defHttp.post({url: Api.UpdateInstance,params});  
+
+export const getRegionsByIds = (params) =>
+  defHttp.post({url: Api.GetRegionsByIds,params});  
+
+export const setGhostInstance = (params) =>
+  defHttp.post({url: Api.SetGhostInstance,params});  
   
