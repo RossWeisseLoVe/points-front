@@ -42,9 +42,11 @@
 
   const dataList = ref([])
   const instanceId = ref(undefined)
+  const regionType = ref(undefined)
   const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
     const regionIds = data.regionIds
     instanceId.value = data.instanceId
+    regionType.value = data.regionType
     const ids = regionIds.map(item=>item.id)
     const res = await getRegionsByIds(ids)
     const tree = buildTreeWithHash(res,regionIds)
@@ -100,12 +102,18 @@
       const data = {} as any
       data.targetRealRegionId = item.id
       data.instanceId = instanceId.value
-      data.sourceRegionIds = []
+      data.sourceRegions = []
+      data.regionType = regionType.value
       for (const source of item.children) {
-        data.sourceRegionIds.push({
-          regionId:source.id,
-          count: source.count
-        })
+        if(source.count>0){
+          delete source.children
+          const count = source.count
+          delete source.count
+          data.sourceRegions.push({
+            region:source,
+            count
+          })
+        }
       }
       param.push(data)
     }

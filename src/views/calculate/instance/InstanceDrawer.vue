@@ -147,7 +147,8 @@
             }else{
               regionIds.push({
                 fid,
-                id:relation.sourceObjId
+                id:relation.sourceObjId,
+                regionType:record.type
               })
             }
 
@@ -161,7 +162,7 @@
       })
       openGhostModal(true,{
         regionIds,
-        instanceId:record.id
+        instanceId:record.instanceId
       })
     }
 
