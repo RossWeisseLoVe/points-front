@@ -162,7 +162,10 @@
       })
       openGhostModal(true,{
         regionIds,
-        instanceId:record.instanceId
+        instanceId:record.instanceId,
+        id:record.id,
+        regionType:record.type,
+        regionId: record.regionId
       })
     }
 

@@ -43,10 +43,14 @@
   const dataList = ref([])
   const instanceId = ref(undefined)
   const regionType = ref(undefined)
+  const id = ref(undefined)
+  const regionId = ref(undefined)
   const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
     const regionIds = data.regionIds
     instanceId.value = data.instanceId
+    regionId.value = data.regionId
     regionType.value = data.regionType
+    id.value = data.id
     const ids = regionIds.map(item=>item.id)
     const res = await getRegionsByIds(ids)
     const tree = buildTreeWithHash(res,regionIds)
@@ -60,7 +64,6 @@
     items.forEach(item => {
       nodeMap[item.id] = { ...item, children: [] };
     });
-    
     // 构建树
     const rootNodes = [];
     links.forEach(link => {
@@ -71,7 +74,6 @@
         nodeMap[fid].children.push(nodeMap[id]);
       }
     });
-    
     return rootNodes;
   }
 
@@ -98,12 +100,11 @@
 
   async function handleSubmit() {
     const param :Array<any> = []
+    const obj = {} as any
     for (const item of dataList.value) {
       const data = {} as any
       data.targetRealRegionId = item.id
-      data.instanceId = instanceId.value
       data.sourceRegions = []
-      data.regionType = regionType.value
       for (const source of item.children) {
         if(source.count>0){
           delete source.children
@@ -117,8 +118,13 @@
       }
       param.push(data)
     }
-    console.log("fuck",param)
-    await setGhostInstance(param)
+    obj.instanceId = instanceId.value
+    obj.regionType = regionType.value
+    obj.id = id.value
+    obj.regionId = regionId.value
+    obj.items = param
+    console.log("fuck",obj)
+    await setGhostInstance(obj)
     closeModal()
   }
 
