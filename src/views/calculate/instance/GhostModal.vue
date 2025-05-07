@@ -40,6 +40,7 @@
   import { getRegionsByIds,setGhostInstance } from "@/api/calculate/calculate"
   import { ItemTypes } from '../model/data';
 
+  const emit = defineEmits(['handleSuccess'])
   const dataList = ref([])
   const instanceId = ref(undefined)
   const regionType = ref(undefined)
@@ -77,7 +78,6 @@
     return rootNodes;
   }
 
-  const emits = defineEmits(['success'])
 
   function getAvatar(item){
     const list = item.info.className.split(".")
@@ -125,6 +125,7 @@
     obj.items = param
     console.log("fuck",obj)
     await setGhostInstance(obj)
+    emit('handleSuccess')
     closeModal()
   }
 

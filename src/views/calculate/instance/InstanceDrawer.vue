@@ -37,7 +37,7 @@
       </template>
       </BasicTable>
       <RegionModal @register="registerModal"/>
-      <GhostModal @register="registerGhostModal"/>
+      <GhostModal @register="registerGhostModal" @handleSuccess="getData(id)"/>
     </BasicDrawer>
   </template>
   <script lang="ts" setup>
@@ -83,14 +83,20 @@
           fixed: 'right',
         },
     });  
-  
-    const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
-      setDrawerProps({ confirmLoading: false });
-      // 获取到实例数据，要和模板数据融合在一起
-      const res = await getRegionInstanceModelListById(data.id)
+    
+    const id = ref(undefined)
+    async function getData(id){
+      const res = await getRegionInstanceModelListById(id)
       console.log("res:",res)
       dataList.value = res
       setTableData(res)
+    }
+
+    const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
+      setDrawerProps({ confirmLoading: false });
+      // 获取到实例数据，要和模板数据融合在一起
+      id.value = data.id
+      await getData(data.id)
       redoHeight()
     });
 
@@ -122,7 +128,8 @@
     }
 
     function handleAddGhost(record){
-      const relationIn = record.relationIn
+      //record的relationIn已经发生改变，所以发生错误，所以需要把region查出来
+      const relationIn = record.ghostRelationIn
       const keyList = Object.keys(relationIn)
       const regionIds:Array<any> = []
       for(const item of keyList){
