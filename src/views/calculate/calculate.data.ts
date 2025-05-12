@@ -6,7 +6,7 @@ export const columns: BasicColumn[] = [
   {
     title: '名称',
     dataIndex: 'className',
-    width: 200,
+    width: 300,
     align: 'left',
   },
   {
@@ -208,7 +208,7 @@ export const modelColumns: BasicColumn[] = [
   {
     title: '名称',
     dataIndex: 'name',
-    width: 200,
+    width: 300,
     align: 'left',
   },
   {

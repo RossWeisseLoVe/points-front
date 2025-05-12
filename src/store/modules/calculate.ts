@@ -206,7 +206,8 @@ export const useCalculateStore = defineStore('calculate',{
             properties: item.info.properties,
           }
           if(item.info.type===ItemTypes.OTHERMODEL){
-            info.sourceModelId = item.info.id
+            info.sourceModelId = item.info.sourceModelId?item.info.sourceModelId:item.info.id
+
           }
           regionList.push({
             id:item.id,
@@ -225,7 +226,7 @@ export const useCalculateStore = defineStore('calculate',{
             properties: item.info.properties,
           }
           if(item.info.type===ItemTypes.OTHERMODEL){
-            info.sourceModelId = item.info.id
+            info.sourceModelId = item.info.sourceModelId?item.info.sourceModelId:item.info.id
           }
           regionList.push({
             id:item.id,
@@ -244,7 +245,8 @@ export const useCalculateStore = defineStore('calculate',{
             properties: item.info.properties,
           }
           if(item.info.type===ItemTypes.OTHERMODEL){
-            info.sourceModelId = item.info.id
+            info.sourceModelId = item.info.sourceModelId?item.info.sourceModelId:item.info.id
+
           }
           regionList.push({
             id:item.id,

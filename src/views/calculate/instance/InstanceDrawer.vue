@@ -55,7 +55,7 @@
     defineOptions({ name: 'MenuDrawer' });
   
     const dataList = ref([])
-    const emit = defineEmits(['success', 'register']);
+    const emit = defineEmits(['success', 'register','updateList']);
     const [registerModal, { openModal, setModalProps }] = useModal();
     const [registerGhostModal, { openModal:openGhostModal, setModalProps:setGhostModalProps }] = useModal();
     const [registerTable, { reload,setTableData,redoHeight }] = useTable({
@@ -90,6 +90,7 @@
       console.log("res:",res)
       dataList.value = res
       setTableData(res)
+      emit('updateList')
     }
 
     const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {

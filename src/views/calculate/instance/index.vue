@@ -33,7 +33,7 @@
           </template>
         </template>
       </BasicTable>
-      <InstanceDrawer @register="registerDrawer" />
+      <InstanceDrawer @register="registerDrawer" @updateList="reload" />
       <InstanceInfoModal @register="registerModal" @success="handleSuccess"  />
     </PageWrapper>
   </template>
@@ -97,7 +97,6 @@
     }
     modelData.value = res
   })
-
 
 
   async function getRegionInstanceById(record){
