@@ -179,7 +179,7 @@ function dropFunc(obj){
   }else if(props.regionType===ItemTypes.OTHERMODEL&&obj.info.regionType===ItemTypes.OTHERMODEL){
     // 这种情况是一个othermodel提供值给另一个othermodel
     calculateStore.setRelationsO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,props.item.regionId,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
-    addRelationO2O(obj.objectId,obj.info.regionId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
+    addRelationO2O(obj.info.regionId,obj.objectId,obj.info.propertyName,obj.info.formItemName,props.item.propertyName,props.item.regionId,obj.info.regionType)
   }else{
     // 在拖拽源与放置目标上增加记录，需要记录的信息有，拖拽源的id、属性名，属性中文名,放置源的id、属性名,属性中文名
     calculateStore.setRelations(obj.objectId,obj.info.propertyName,obj.info.formItemName,props.id,props.item.propertyName,props.item.formItemName,props.regionType)
@@ -304,7 +304,7 @@ function removeRelationO2U(sourceObjId,sourceFatherRegionId,sourcePropertyName,t
   }
 }
 
-function addRelationO2O(sourceObjId,sourceRealRegionId,sourcePropertyName,sourceLabel,targetPropertyName,targetObjId,sourceRegionType){
+function addRelationO2O(sourceObjId,sourceFatherRegionId,sourcePropertyName,sourceLabel,targetPropertyName,targetObjId,sourceRegionType){
   if(props.provider.relationIn===undefined||props.provider.relationIn===null){
     props.provider.relationIn = {}
   }
@@ -313,17 +313,17 @@ function addRelationO2O(sourceObjId,sourceRealRegionId,sourcePropertyName,source
     props.provider.relationIn[key] = []
   }
   props.provider.relationIn[key].push({
-    sourceObjId,sourceRealRegionId,sourcePropertyName,sourceLabel,sourceRegionType
+    sourceObjId,sourceFatherRegionId,sourcePropertyName,sourceLabel,sourceRegionType
   })
 }
 
-function removeRelationO2O(sourceObjId,sourceRealRegionId,sourcePropertyName,targetPropertyName,targetObjId){
+function removeRelationO2O(sourceObjId,sourceFatherRegionId,sourcePropertyName,targetPropertyName,targetObjId){
   if(props.provider.relationIn!==undefined){
     const key = targetPropertyName+"_"+targetObjId
     if(props.provider.relationIn[key]!==undefined){
       const list = props.provider.relationIn[key]
       const newList = list.filter(item=>{
-        return !(item.sourceObjId === sourceObjId && item.sourceRealRegionId===sourceRealRegionId && item.sourcePropertyName === sourcePropertyName)
+        return !(item.sourceObjId === sourceObjId && item.sourceFatherRegionId===sourceFatherRegionId && item.sourcePropertyName === sourcePropertyName)
       })
       if(newList.length===0){
         delete props.provider.relationIn[key]
