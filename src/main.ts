@@ -18,6 +18,8 @@ import { setupStore } from '@/store';
 import Vue3ColorPicker from "vue3-colorpicker";
 import "vue3-colorpicker/style.css";
 import App from './App.vue';
+import VueKonva from 'vue-konva';
+
 
 async function bootstrap() {
   const app = createApp(App);
@@ -59,6 +61,9 @@ async function bootstrap() {
   // https://next.router.vuejs.org/api/#isready
   // await router.isReady();
   app.use(Vue3ColorPicker);
+
+  app.use(VueKonva)
+
   app.mount('#app');
 }
 

@@ -27,7 +27,19 @@
             </Collapse>
         </div>
         <div class="w-5/6 drop-container">
-            <Konva />
+            <div class="h-1/2 upper">
+                <Provider class="h-full"/>
+                <div class="toolBar">
+                    <Button type="primary" @click="openInfoModal('save')" class="tool-button">保存</Button>
+                    <Button type="primary" @click="checkModel" class="tool-button">检查</Button>
+                    <Button type="primary"  class="tool-button" @click="openInfoModal('info')">信息</Button>
+                    <Button type="primary"  class="tool-button">流程</Button>
+                </div>
+            </div>
+            <div class="w-2/2 h-1/2 bottom">
+              <Transformer class="w-3/4 h-2/2" />  
+              <Reciver class="w-1/4 h-2/2" />
+            </div>
         </div>
         <InfoModal @register="registerModal" />
     </PageWrapper>
@@ -51,7 +63,6 @@ import { onBeforeMount } from 'vue';
 import InfoModal from "./components/InfoModal.vue"
 import { useModal } from '@/components/Modal'
 import { aggregatorsList } from "./data.ts"
-import Konva from "../konva/konva.vue"
 
 const [registerModal, { openModal, setModalProps }] = useModal();
 const calculateStore = useCalculateStore()
